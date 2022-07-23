@@ -6,7 +6,8 @@
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:vue/essential"
+    "plugin:vue/essential",
+    "./.eslintrc-auto-import.json"
   ],
   "parserOptions": {
     "ecmaVersion": "latest",

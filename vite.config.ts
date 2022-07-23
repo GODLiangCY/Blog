@@ -53,7 +53,10 @@ export default defineConfig({
       dts: './src/auto-imports.d.ts',
       resolvers: [
         IconsResolver()
-      ]
+      ],
+      eslintrc: {
+        enabled: true
+      }
     }),
 
     Components({
@@ -112,6 +115,8 @@ export default defineConfig({
     include: [
       'vue',
       'vue-router',
+      '@vueuse/core',
+      'dayjs'
     ]
   }
 })
