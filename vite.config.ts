@@ -49,12 +49,13 @@ export default defineConfig({
     Components({
       extensions: ['vue', 'md'],
       include: [/\.vue$/, /\.vue\?vue/, /\.md$/],
-      dts: './src/components.d.ts'
+      dts: './src/components.d.ts',
+      resolvers: [
+        IconsResolver()
+      ]
     }),
 
-    Icons({
-      autoInstall: true,
-    }),
+    Icons(),
 
     Unocss(),
 

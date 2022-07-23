@@ -3,7 +3,12 @@
 </script>
 
 <template>
-  <router-view />
+  <div>
+    <nav-bar />
+    <main>
+      <router-view />
+    </main>
+  </div>
 </template>
 
 <style scoped>
