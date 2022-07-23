@@ -158,7 +158,8 @@ if (debug) {
 
 即在debug模式下，会在控制台打印解析出来的命令，不会执行。我们可以试试，以`ni`本身项目为例子
 
-![](../pics/ni-1.png)
+<img src="/images/ni-1-dark.png" rounded-lg img-dark />
+<img src="/images/ni-1-light.png" rounded-lg img-light />
 
 ### 02 -C option
 
@@ -175,7 +176,8 @@ if (args[0] === '-C') {
 
 同样的，举个例子
 
-![](../pics/ni-2.png)
+<img src="/images/ni-2-dark.png" rounded-lg img-dark />
+<img src="/images/ni-2-light.png" rounded-lg img-light />
 
 `-C ni`代表我们切换到了`projects/ni`目录
 
