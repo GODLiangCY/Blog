@@ -7,11 +7,9 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
-    IRiMoonLine: typeof import('~icons/ri/moon-line')['default']
-    IRiSunLine: typeof import('~icons/ri/sun-line')['default']
     ListPosts: typeof import('./components/ListPosts.vue')['default']
     NavBar: typeof import('./components/NavBar.vue')['default']
-    Post: typeof import('./components/Post.vue')['default']
+    PostItem: typeof import('./components/PostItem.vue')['default']
     PostWrapper: typeof import('./components/PostWrapper.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

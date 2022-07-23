@@ -10,6 +10,16 @@ import Icons from 'unplugin-icons/vite'
 import IconsResolver from 'unplugin-icons/resolver'
 import Unocss from 'unocss/vite'
 import MarkDown from 'vite-plugin-vue-markdown'
+import Prism from 'markdown-it-prism'
+import Anchor from 'markdown-it-anchor'
+import { slugify } from './scripts/slugify'
+import LinkAttributes from 'markdown-it-link-attributes'
+import TOC from 'markdown-it-table-of-contents'
+
+import 'prismjs/components/prism-javascript.js'
+import 'prismjs/components/prism-typescript.js'
+import 'prismjs/components/prism-json.js'
+import 'prismjs/components/prism-markdown.js'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -36,7 +46,7 @@ export default defineConfig({
     }),
 
     AutoImport({
-      include: [
+      imports: [
         'vue',
         'vue-router'
       ],
@@ -61,12 +71,35 @@ export default defineConfig({
 
     MarkDown({
       wrapperComponent: 'PostWrapper',
+      wrapperClasses: 'prose m-auto',
       headEnabled: true,
       markdownItOptions: {
         quotes: '""\'\'',
       },
       markdownItSetup(md) {
-        // md
+        md.use(Prism)
+
+        md.use(Anchor, {
+          slugify,
+          permalink: Anchor.permalink.linkInsideHeader({
+            symbol: '#',
+            renderAttrs: () => ({ 'aria-hidden': 'true' }),
+          }),
+        })
+
+        md.use(LinkAttributes, {
+          matcher: (link: string) => /^https?:\/\//.test(link),
+          attrs: {
+            target: '_blank',
+            rel: 'noopener',
+          },
+        })
+
+        md.use(TOC, {
+          includeLevel: [1, 2, 3],
+          slugify,
+        })
+
       }
     })
   ],
