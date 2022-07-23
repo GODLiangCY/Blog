@@ -6,7 +6,7 @@ tags:
 categories:
  - FrontEnd
 words: 2200
-timeConsumed: '8min'
+duration: '8min'
 description: '深入浅出，揭开**Prototype**的神秘面纱！'
 ---
 

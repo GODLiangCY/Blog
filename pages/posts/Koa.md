@@ -8,7 +8,7 @@ tags:
 categories:
  - BackEnd
 words: 1600
-timeConsumed: '4min'
+duration: '4min'
 description: 'Koa向来以小而美著称，简洁且易于上手，是小项目开发的不二选择。
 
 笔者旨在学习Koa2.13.1源码的设计与实现'
