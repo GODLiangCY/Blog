@@ -8,7 +8,7 @@ tags:
 categories:
  - FrontEnd
 words: 2000
-timeConsumed: 5min
+duration: 5min
 description: '[`ni`](https://github.com/antfu/ni)是由 antfu 开源的一个工具，能让开发者使用正确的包管理工具(npm, yarn, pnpm, bun)，非常简单易用。其源码实现也不是太困难，让我们来一起研究一下。'
 ---
 
