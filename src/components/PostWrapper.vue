@@ -32,6 +32,7 @@ const route = useRoute()
       </router-link>
     </div>
     <BackToTop />
+    <FooterBar />
   </div>
 </template>
 

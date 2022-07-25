@@ -8,6 +8,7 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     BackToTop: typeof import('./components/BackToTop.vue')['default']
+    FooterBar: typeof import('./components/FooterBar.vue')['default']
     'IAntDesign:calendarTwotone': typeof import('~icons/ant-design/calendar-twotone')['default']
     'IBi:book': typeof import('~icons/bi/book')['default']
     'ICarbon:tagGroup': typeof import('~icons/carbon/tag-group')['default']
