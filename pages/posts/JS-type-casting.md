@@ -1,7 +1,7 @@
 ---
 title: JS之类型转换篇
 date: '2021-11-03'
-words: '2200'
+words: 2200
 duration: '6min'
 tags: 
  - JavaScript
