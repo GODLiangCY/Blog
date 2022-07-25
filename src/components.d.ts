@@ -7,6 +7,9 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    'IAntDesign:calendarTwotone': typeof import('~icons/ant-design/calendar-twotone')['default']
+    'IBi:book': typeof import('~icons/bi/book')['default']
+    'IFluent:timer24Filled': typeof import('~icons/fluent/timer24-filled')['default']
     IRiMoonLine: typeof import('~icons/ri/moon-line')['default']
     IRiSunLine: typeof import('~icons/ri/sun-line')['default']
     ListPosts: typeof import('./components/ListPosts.vue')['default']
