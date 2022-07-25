@@ -1,5 +1,7 @@
 ## About
 
+[godliangcy.ink](https://godliangcy.ink/)
+
 my personal website powered by [Vite](https://vitejs.dev/)
 
 The design and code are borrowed from [ant fu's repo](https://github.com/antfu/antfu.me) to a very certain extent
