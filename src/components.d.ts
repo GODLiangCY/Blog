@@ -7,9 +7,11 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    BackToTop: typeof import('./components/BackToTop.vue')['default']
     'IAntDesign:calendarTwotone': typeof import('~icons/ant-design/calendar-twotone')['default']
     'IBi:book': typeof import('~icons/bi/book')['default']
-    'IFluent:timer24Filled': typeof import('~icons/fluent/timer24-filled')['default']
+    'ICarbon:tagGroup': typeof import('~icons/carbon/tag-group')['default']
+    'IEp:timer': typeof import('~icons/ep/timer')['default']
     IRiMoonLine: typeof import('~icons/ri/moon-line')['default']
     IRiSunLine: typeof import('~icons/ri/sun-line')['default']
     ListPosts: typeof import('./components/ListPosts.vue')['default']

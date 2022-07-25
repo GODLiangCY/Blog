@@ -7,6 +7,7 @@ const { frontmatter } = defineProps<{
 }>()
 
 const route = useRoute()
+
 </script>
 
 <template>
@@ -30,6 +31,7 @@ const route = useRoute()
         cd ..
       </router-link>
     </div>
+    <BackToTop />
   </div>
 </template>
 
