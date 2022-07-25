@@ -18,7 +18,7 @@ jobs:
           node-version: 16
 
       - name: install pnpm
-        run: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v2
           
       - name: install
         run: pnpm i
