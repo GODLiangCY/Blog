@@ -22,7 +22,7 @@ html {
   scrollbar-color: var(--c-scrollbar) var(--c-bg);
 }
 
-.sponsorkit-avatar {
+/* .sponsorkit-avatar {
   cursor: pointer;
 }
 .sponsorkit-tier-title {
@@ -34,7 +34,7 @@ html {
   font-weight: 300;
   font-size: 15px;
   transform: translateY(8px);
-}
+} */
 
 ::-webkit-scrollbar {
   width: 6px;
