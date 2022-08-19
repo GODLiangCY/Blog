@@ -1,17 +1,19 @@
 <script setup lang="ts">
 import { parseDate } from '~/lib/day'
 import type { Post } from '~/types'
+import { vInfiniteScroll } from '~/directives'
 
 const router = useRouter()
 
 const tag = ref('')
+const initialNum = ref(4)
 
 function choseTag(name: string) {
   if (!tag.value) tag.value = name
   else tag.value = ''
 }
 
-const postsRoutes: Post[] = router.getRoutes()
+const allPostsRoutes: Post[] = router.getRoutes()
   .filter(i => i.path.match(/^\/posts\/.*$/))
   .sort((a, b) => {
     return parseDate(b.meta.frontmatter.date) - parseDate(a.meta.frontmatter.date)
@@ -21,8 +23,16 @@ const postsRoutes: Post[] = router.getRoutes()
     path: i.path
   }))
 
+const allPostsNum = allPostsRoutes.length
+
+function load() {
+  initialNum.value + 2 <= allPostsNum
+    ? initialNum.value += 2
+    : initialNum.value = allPostsNum
+}
+
 const posts = computed(() => {
-  return tag.value ? postsRoutes.filter(i => i.tags.includes(tag.value)) : postsRoutes
+  return tag.value ? allPostsRoutes.filter(i => i.tags.includes(tag.value)).slice(0, initialNum.value) : allPostsRoutes.slice(0, initialNum.value)
 })
 </script>
 <template>
@@ -36,7 +46,9 @@ const posts = computed(() => {
         </span>
       </span>
     </div>
-    <post-item v-for="post in posts" :key="post.path" v-bind="post" @tagClick="choseTag" />
+    <main v-infinite-scroll="load" overflow-auto>
+      <post-item v-for="post in posts" :key="post.path" v-bind="post" @tagClick="choseTag" />
+    </main>
   </div>
 </template>
 
