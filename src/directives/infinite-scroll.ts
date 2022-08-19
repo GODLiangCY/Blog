@@ -2,7 +2,8 @@
 import type { ObjectDirective, ComponentPublicInstance } from 'vue'
 import { nextTick } from 'vue'
 import { getOffsetTopDistance, getScrollContainer } from '~/utils'
-import { throttle } from 'lodash'
+import lodash from 'lodash'
+const { throttle } = lodash
 
 const SCOPE = 'InfiniteScroll'
 const CHECK_INTERVAL = 50
