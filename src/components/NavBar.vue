@@ -25,6 +25,9 @@ import juejinSVG from '~/assets/juejin.svg?url'
         <a href="https://juejin.cn/user/4415278906347303" target="_blank" title="JueJin">
           <img class="w-[1.2rem] h-[1.2rem] block" alt="Juejin logo" :src="juejinSVG" />
         </a>
+        <a href="/feed.xml" target="_blank" title="RSS" class="lt-md:hidden">
+          <div i-la-rss-square style="font-size:1.25rem; margin: 0 -0.125rem;" />
+        </a>
         <toggle-theme />
       </div>
     </nav>
