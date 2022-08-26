@@ -1,20 +1,18 @@
 <script setup lang="ts">
-import type { Post } from '~/types'
 import it from 'markdown-it'
 
 defineEmits<{
   (e: 'tagClick', name: string): void
 }>()
 
-const props: Readonly<Post> = defineProps<{
-  categories: string[],
-  date: string,
-  duration: string,
-  path: string,
-  title: string,
-  description: string,
-  tags: string[],
-  words: number,
+const props = defineProps<{
+  date: string
+  duration: string
+  path: string
+  title: string
+  description: string
+  tags: string[]
+  words: number
 }>()
 
 const md = new it()

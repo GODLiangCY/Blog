@@ -1,9 +1,11 @@
 ---
-title: 从零开始，写一个mini-vue3——第零章：准备工作
-date: 2022-08-19
+title: '从零开始，写一个mini-vue3——第零章：准备工作'
+date: '2022-08-23'
 tags:
  - Vue
-description: 构建 pnpm + monorepo 项目
+words: 420
+duration: 1min
+description: "*'What I cannot create, I do not understand' - Richard Feynman*。写一个 mini Vue3，是为了更好地理解 Vue3！Let's go!"
 ---
 
 # workspace
@@ -49,4 +51,16 @@ ESLint 当然也是不可或缺的开发利器，我们用它来纠错和统一�
 
 以确保 ESLint 能正确工作。
 
-不过嘛，反正我们是自己写着玩的，可以不和 [Vue3 的 ESLint](https://github.com/vuejs/core/blob/main/.eslintrc.js) 一致，而且
+不过嘛，反正我们是自己写着玩的，可以不和 [Vue3 的 ESLint](https://github.com/vuejs/core/blob/main/.eslintrc.js) 一致，而且可以看到 Vue3 是以 [ES2015](https://github.com/vuejs/core/blob/main/.eslintrc.js#L20) 作为一个基准的支持的。笔者认为直接按自己喜欢的来就好。执行 `pnpm create @eslint/config` ，配置自己想要的即可。
+
+# Vitest
+
+测试框架当然也是必不可少的。Vue3 是应用了 Jest 作为测试框架的，笔者是想用 Vitest 来替代，应该问题不大。反正后面出问题了还能改。
+
+# Typescript
+
+抄一下 tsconfig.json
+
+#  小结
+
+Done！现在项目[长这样](https://github.com/GODLiangCY/mini-vue3/tree/c1abfc95c8b1eeff622dbf8b0a4595b79a5182cf)

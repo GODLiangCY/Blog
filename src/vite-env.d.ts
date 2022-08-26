@@ -16,13 +16,14 @@ declare module '*.md' {
 
 declare module 'vue-router' {
   export interface FrontMatter {
-    title: string,
-    date: string,
-    tags: string[],
-    categories: string[],
-    description: string,
-    words: number,
-    duration: string,
+    title: string
+    date: string
+    tags: string[]
+    categories?: string[]
+    description: string
+    words: number
+    duration: string
+    lastUpdateTime: string
   }
   interface RouteMeta {
     frontmatter: FrontMatter

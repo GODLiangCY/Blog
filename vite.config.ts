@@ -15,6 +15,7 @@ import Anchor from 'markdown-it-anchor'
 import { slugify } from './scripts/slugify'
 import LinkAttributes from 'markdown-it-link-attributes'
 import TOC from 'markdown-it-table-of-contents'
+import { getLastUpdateTime } from './scripts/utils'
 
 import 'prismjs/components/prism-javascript.js'
 import 'prismjs/components/prism-typescript.js'
@@ -39,7 +40,7 @@ export default defineConfig({
 
         const md = fs.readFileSync(path, 'utf8')
         const { data } = matter(md)
-        route.meta = Object.assign(route.meta || {}, { frontmatter: data })
+        route.meta = Object.assign(route.meta || {}, { frontmatter: {...data, lastUpdateTime: getLastUpdateTime(path)} })
 
         return route
       }

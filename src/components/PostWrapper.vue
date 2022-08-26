@@ -8,6 +8,11 @@ const { frontmatter } = defineProps<{
 
 const route = useRoute()
 
+// the vite-plugin-vue-markdown plugin will only parse 
+// native frontmatter of the markdown file
+// so I put time on here
+const lastUpdateTime = route.meta.frontmatter.lastUpdateTime
+
 </script>
 
 <template>
@@ -23,6 +28,7 @@ const route = useRoute()
     <article>
       <slot />
     </article>
+    <div v-if="lastUpdateTime" class="prose m-auto mt-12 opacity-50">上次修改时间: {{ lastUpdateTime }}</div>
     <div v-if="route.path !== '/'" class="prose m-auto mt-8 mb-8">
       <router-link
         :to="route.path.split('/').slice(0, -1).join('/') || '/'"
