@@ -24,7 +24,7 @@ description: 'Koa向来以小而美著称，简洁且易于上手，是小项目
 
 ## 初窥全貌
 
-浏览Koa的`package.json`文件，发现
+浏览Koa的 `package.json` 文件，发现
 
 ```json
 {
@@ -39,14 +39,14 @@ description: 'Koa向来以小而美著称，简洁且易于上手，是小项目
 
 ```
 
-由此不难看出，lib文件夹下的`application.js`正是Koa的主体所在。此外，Koa的源码全部在lib文件夹下，而lib文件夹十分简洁，只有四个文件
+由此不难看出，lib 文件夹下的 `application.js` 正是 Koa 的主体所在。此外，Koa 的源码全部在 lib 文件夹下，而 lib 文件夹十分简洁，只有四个文件
 
-+ application.js       Koa主体
-+ context.js           Koa上下文
++ application.js       Koa 主体
++ context.js           Koa 上下文
 + request.js           封装request
 + response.js         封装response
 
-总的来看`application.js`的代码，能发现Koa的实现其实并不复杂。其核心部分如下
+总的来看 `application.js` 的代码，能发现 Koa 的实现其实并不复杂。其核心部分如下
 
 ```js
 const Emitter = require('events')
@@ -66,9 +66,9 @@ module.exports = class Application extends Emitter {
 }
 ```
 
-是的，就是这么简单，和我们使用Koa一样简单！
+是的，就是这么简单，和我们使用 Koa 一样简单！
 
-整个Koa应用是一个基于Node里面的事件触发器的类。它在Node中有着相当重要的地位，我们看看[官网](http://nodejs.cn/api/events.html)是怎么说的
+整个 Koa 应用是一个基于 Node 里面的事件触发器的类。它在 Node 中有着相当重要的地位，我们看看[官网](http://nodejs.cn/api/events.html)是怎么说的
 
 > Node.js 的大部分核心 API 都是围绕惯用的异步事件驱动架构构建的，在该架构中，某些类型的对象（称为"触发器"）触发命名事件，使 `Function` 对象（"监听器"）被调用。
 >
@@ -90,13 +90,13 @@ module.exports = class Application extends Emitter {
 > myEmitter.emit('event');
 > ```
 
-这种经典的`.on`式的回调写法，在Node中无处不在，如http.Server等。可以说`EventEmitter`是Node异步IO机制的基石。
+这种经典的 `.on` 式的回调写法，在 Node 中无处不在，如 http.Server 等。可以说 `EventEmitter` 是 Node 异步 IO 机制的基石。
 
 
 
 ## 中间件模式
 
-提到Koa，就免不了要提到其中间件模式。它正是Koa设计上的精髓所在。请求到了服务器，依次按序被注册的中间件所处理。其相关实现并不复杂
+提到 Koa，就免不了要提到其中间件模式。它正是 Koa 设计上的精髓所在。请求到了服务器，依次按序被注册的中间件所处理。其相关实现并不复杂
 
 ```js
 class Application extends Emitter {
@@ -115,7 +115,7 @@ class Application extends Emitter {
 }
 ```
 
-处理中间件模式的`Server`结构是这样的
+处理中间件模式的 `Server` 结构是这样的
 
 ```js
 const compose = require('koa-compose')
@@ -176,7 +176,7 @@ function respond(ctx) {
 
 ### koa-compose
 
-接上，我们先来看[koa-compose](https://github.com/koajs/compose)这个工具，它用于将中间件整合起来。其源码只有短短48行，相当精简。直接贴上附带注释的源码
+接上，我们先来看 [koa-compose](https://github.com/koajs/compose) 这个工具，它用于将中间件整合起来。其源码只有短短48行，相当精简。直接贴上附带注释的源码
 
 ```js
 'use strict'
@@ -229,11 +229,11 @@ function compose (middleware) {
 }
 ```
 
-其核心就在于`dispatch`函数。该函数依次取出`middleware`中的函数，并将其通过`Promise.resolve()`串联在一起。只要`middleware`中的函数执行了`next()`，下一个函数也将紧跟着执行，直到遍历完整个`middleware`数组。得益于**Event Loop**，`Promise.resolve()`使所有异步函数依次在微任务队列里执行完。这里还用`index`指向上一个被调用的`middleware function`，所以出现了闭包结构。
+其核心就在于 `dispatch` 函数。该函数依次取出 `middleware` 中的函数，并将其通过 `Promise.resolve()` 串联在一起。只要 `middleware` 中的函数执行了 `next()`，下一个函数也将紧跟着执行，直到遍历完整个 `middleware` 数组。得益于 **Event Loop**，`Promise.resolve()` 使所有异步函数依次在微任务队列里执行完。这里还用 `index` 指向上一个被调用的 `middleware function`，所以出现了闭包结构。
 
 ## Settings
 
-Koa还支持[设置实例的一些属性](https://koajs.com/#application)，如`app.env`,`app.keys`等。 
+Koa 还支持[设置实例的一些属性](https://koajs.com/#application)，如 `app.env`, `app.keys` 等。 
 
 这个就比较简单了,其相关实现如下
 
@@ -264,13 +264,13 @@ Koa还支持[设置实例的一些属性](https://koajs.com/#application)，如`
 
 ## request，response，context
 
-在Node的原生http模块中，[`http.createServer`](http://nodejs.cn/api/http.html#httpcreateserveroptions-requestlistener)接受`requestListener`回调函数作为其参数。该函数的两个参数`request`和`response`，是分别基于`http.IncomingMessage`类和`http.ServerResponse`类的。在Koa中，为了简化、方便开发者对其的处理，Koa自己封装了`request`和`response`，可以理解为对原生`IncomingMessage`和`ServerResponse`的一层抽象。
+在 Node 的原生 http 模块中，[`http.createServer`](http://nodejs.cn/api/http.html#httpcreateserveroptions-requestlistener) 接受 `requestListener` 回调函数作为其参数。该函数的两个参数 `request` 和 `response`，是分别基于 `http.IncomingMessage` 类和 `http.ServerResponse` 类的。在 Koa 中，为了简化、方便开发者对其的处理，Koa 自己封装了 `request` 和 `response`，可以理解为对原生 `IncomingMessage` 和 `ServerResponse` 的一层抽象。
 
-`context`则是将`request`和`response`对象封装成一个对象，为开发提供了很多有用的属性与API
+`context` 则是将 `request` 和 `response` 对象封装成一个对象，为开发提供了很多有用的属性与 API
 
-lib文件夹的三个相应的文件，正是书写了这三者的`Prototype`，在Koa主体中以`Object.create(proto)`的方式使用。
+lib 文件夹的三个相应的文件，正是书写了这三者的 `Prototype`，在 Koa 主体中以 `Object.create(proto)` 的方式使用。
 
-`context.js`中还利用了`delegates`这个年久失修的包，凭借委托的设计模式来控制`context`上的`request`和`response`的行为。
+`context.js` 中还利用了 `delegates` 这个年久失修的包，凭借委托的设计模式来控制 `context` 上的 `request` 和 `response` 的行为。
 
 例如
 
@@ -286,7 +286,7 @@ delegate(proto, 'response')
   .method('vary')
 ```
 
-其[源代码](https://github.com/tj/node-delegates/blob/master/index.js#L107)里居然还出现了用`proto.__defineGetter__`来改写[[ Get ]]行为的写法。17年有位老哥提了个用`Object.defineProperty`代替的[PR](https://github.com/tj/node-delegates/pull/20)，也没人管...    
+其[源代码](https://github.com/tj/node-delegates/blob/master/index.js#L107)里居然还出现了用 `proto.__defineGetter__` 来改写[[ Get ]]行为的写法。17年有位老哥提了个用 `Object.defineProperty` 代替的 [PR](https://github.com/tj/node-delegates/pull/20)，也没人管...    
 
 详细内容，读者若有兴趣可自行查阅，文档与源码照着一起看。
 

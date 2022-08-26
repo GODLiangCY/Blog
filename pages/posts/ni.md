@@ -9,16 +9,16 @@ categories:
  - FrontEnd
 words: 2000
 duration: 5min
-description: '[`ni`](https://github.com/antfu/ni)是由 antfu 开源的一个工具，能让开发者使用正确的包管理工具(npm, yarn, pnpm, bun)，非常简单易用。其源码实现也不是太困难，让我们来一起研究一下。'
+description: '[`ni`](https://github.com/antfu/ni) 是由 antfu 开源的一个工具，能让开发者使用正确的包管理工具(npm, yarn, pnpm, bun)，非常简单易用。其源码实现也不是太困难，让我们来一起研究一下。'
 ---
 
 [[toc]]
 
-## 什么是`ni`
+## 什么是 `ni`
 
-[`ni`](https://github.com/antfu/ni)是为了能让开发者使用正确的包管理而诞生的，它的原理是检测你的 lockfile ,即(`yarn.lock` / `pnpm-lock.yaml` / `package-lock.json` / `bun.lockb`)，或者根据`package.json`里的`packageManager`字段来检测你用的是哪个包管理。比如一个 pnpm 项目，在终端下敲`ni`，就会执行`pnpm install`;敲`nr dev`，就会执行`pnpm run dev`。
+[`ni`](https://github.com/antfu/ni) 是为了能让开发者使用正确的包管理而诞生的，它的原理是检测你的 lockfile ,即(`yarn.lock` / `pnpm-lock.yaml` / `package-lock.json` / `bun.lockb`)，或者根据 `package.json` 里的 `packageManager` 字段来检测你用的是哪个包管理。比如一个 pnpm 项目，在终端下敲 `ni`，就会执行 `pnpm install`; 敲 `nr dev`，就会执行 `pnpm run dev`。
 
-> 很巧的是，就在本文开始撰写的当天，`ni`发布了新版本，支持了[`bun`](https://bun.sh/)这个新兴的 js 运行时
+> 很巧的是，就在本文开始撰写的当天，`ni` 发布了新版本，支持了 [`bun`](https://bun.sh/) 这个新兴的 js 运行时
 
 它一共有这么些命令可供使用
 
@@ -30,13 +30,13 @@ description: '[`ni`](https://github.com/antfu/ni)是由 antfu 开源的一个工
 + `nci` - clean install
 + `na` - agent alias
 
-## 为什么要用`ni`
+## 为什么要用 `ni`
 
-因为懒！相信 antfu 开发这款工具时一定也是抱着相同的心态。每次`clone`一个项目之后，都要先去看一看作者用的是什么包管理工具，再去跑`scripts`，太麻烦了。而且`ni`提供的命令十分简短、易记，实在是太香了！
+因为懒！相信 antfu 开发这款工具时一定也是抱着相同的心态。每次 `clone` 一个项目之后，都要先去看一看作者用的是什么包管理工具，再去跑 `scripts`，太麻烦了。而且 `ni` 提供的命令十分简短、易记，实在是太香了！
 
 ~~*`npm i` in a yarn project, again? F\* \* k!*~~
 
-## `ni`是如何实现的
+## `ni` 是如何实现的
 
 其核心逻辑如下
 
@@ -44,7 +44,7 @@ description: '[`ni`](https://github.com/antfu/ni)是由 antfu 开源的一个工
 2. 检测包管理工具
 3. 将其执行
 
-命令的源码都在src/commands下，大多数源码，都形如以下形式
+命令的源码都在 src/commands 下，大多数源码，都形如以下形式
 
 ```typescript
 // src/commands/ni.ts
@@ -54,7 +54,7 @@ import { runCli } from '../runner'
 runCli(parseNi)
 ```
 
-`runCli`函数的源码是
+`runCli` 函数的源码是
 
 ```typescript
 // src/runner.ts
@@ -71,9 +71,9 @@ export async function runCli(fn: Runner, options: DetectOptions = {}) {
 }
 ```
 
-其通过`process.argv`拿到用户在命令行所输入的附带的参数，然后执行`run(fn, args, options)`
+其通过 `process.argv` 拿到用户在命令行所输入的附带的参数，然后执行 `run(fn, args, options)`
 
-可以看到核心就是`run`函数了，让我们来分析分析。
+可以看到核心就是 `run` 函数了，让我们来分析分析。
 
 ```typescript
 export async function run(fn: Runner, args: string[], options: DetectOptions = {}) {
@@ -139,14 +139,14 @@ export async function run(fn: Runner, args: string[], options: DetectOptions = {
 
 ### 01 debug模式
 
-在同文件下，有一个`DEBUG_SIGN`变量
+在同文件下，有一个 `DEBUG_SIGN` 变量
 
 ```typescript
 // src/runner.ts
 const DEBUG_SIGN = '?'
 ```
 
-见`run()`函数的49-53行
+见 `run()` 函数的49-53行
 
 ```typescript
 if (debug) {
@@ -156,7 +156,7 @@ if (debug) {
 }
 ```
 
-即在debug模式下，会在控制台打印解析出来的命令，不会执行。我们可以试试，以`ni`本身项目为例子
+即在 debug 模式下，会在控制台打印解析出来的命令，不会执行。我们可以试试，以 `ni` 本身项目为例子
 
 <img src="/images/ni-1-dark.png" rounded-lg img-dark />
 <img src="/images/ni-1-light.png" rounded-lg img-light />
@@ -179,11 +179,11 @@ if (args[0] === '-C') {
 <img src="/images/ni-2-dark.png" rounded-lg img-dark />
 <img src="/images/ni-2-light.png" rounded-lg img-light />
 
-`-C ni`代表我们切换到了`projects/ni`目录
+`-C ni` 代表我们切换到了 `projects/ni` 目录
 
 ### 03 -g
 
-既然带有`-g`参数，那么策略就是试图去寻找全局的包管理。反映在代码中，可以看到给fn的第一个参数是`await getGlobalAgent()`。antfu 采用的逻辑是，先看`package.json` 中是否存在 `packageManager`，若没有的话，则采用`ni`的全局配置(在`.nirc`文件中)，还是没有，那么就给默认值(`npm`)
+既然带有 `-g` 参数，那么策略就是试图去寻找全局的包管理。反映在代码中，可以看到给 fn 的第一个参数是 `await getGlobalAgent()`。antfu 采用的逻辑是，先看 `package.json` 中是否存在 `packageManager`，若没有的话，则采用 `ni` 的全局配置(在 `.nirc` 文件中)，还是没有，那么就给默认值(`npm`)
 
 其实现如下
 
@@ -231,7 +231,7 @@ export async function getGlobalAgent() {
 }
 ```
 
-那么，`command = await fn(await getGlobalAgent(), args)`中，`fn`的实现又是怎么样的？别急，在[05](###05 生成相应命令)会讲
+那么，`command = await fn(await getGlobalAgent(), args)`中，`fn` 的实现又是怎么样的？别急，在[05](###05 生成相应命令)会讲
 
 ### 04 检测包管理工具
 
@@ -241,7 +241,7 @@ export async function getGlobalAgent() {
 let agent = await detect({ ...options, cwd }) || await getDefaultAgent()
 ```
 
-`getDefaultAgent()`的实现和`getGlobalAgent()`十分类似
+`getDefaultAgent()` 的实现和 `getGlobalAgent()` 十分类似
 
 ```typescript
 export async function getDefaultAgent() {
@@ -255,7 +255,7 @@ export async function getDefaultAgent() {
 }
 ```
 
-`detect()`实现如下
+`detect()` 实现如下
 
 ```typescript
 export interface DetectOptions {
@@ -334,9 +334,9 @@ export async function detect({ autoInstall, cwd }: DetectOptions) {
 }
 ```
 
-可以看到，`packageManager` 字段拥有最高的优先级，其次是根据`lockfile` 获取相应的包管理。
+可以看到，`packageManager` 字段拥有最高的优先级，其次是根据 `lockfile` 获取相应的包管理。
 
-如果都没取到结果，那么轮到`getDefaultAgent()` 执行，它的结果是`prompt`
+如果都没取到结果，那么轮到 `getDefaultAgent()` 执行，它的结果是 `prompt`
 
 结合代码可知，是让用户自己选择一款包管理
 
@@ -350,7 +350,7 @@ command = await fn(agent as Agent, args, {
 })
 ```
 
-到这里，就要回头看看`fn`是如何实现的。以`parseNi`为例
+到这里，就要回头看看 `fn` 是如何实现的。以 `parseNi` 为例
 
 ```typescript
 // AGENTS	这一结构存储了相应的包管理以及其命令
@@ -417,14 +417,14 @@ export const parseNi = <Runner>((agent, args, ctx) => {
 
 ### 06 针对 volta 做特殊处理
 
-[volta](https://volta.sh/)是一款JS工具管理器，本文不过多介绍
+[volta](https://volta.sh/) 是一款JS工具管理器，本文不过多介绍
 
 ### 07 执行相应命令
 
-用到了`execa`包的`execaCommand`来执行
+用到了 `execa` 包的 `execaCommand` 来执行
 
 
 
 ## 小结
 
-这回读了源码，了解到了Node的些许知识，以及`fast-glob`，`execa`, `unbuild`这些很不错的第三方库，收获不少
+这回读了源码，了解到了Node的些许知识，以及`fast-glob`，`execa`, `unbuild` 这些很不错的第三方库，收获不少

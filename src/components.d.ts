@@ -13,8 +13,6 @@ declare module '@vue/runtime-core' {
     'IBi:book': typeof import('~icons/bi/book')['default']
     'ICarbon:tagGroup': typeof import('~icons/carbon/tag-group')['default']
     'IEp:timer': typeof import('~icons/ep/timer')['default']
-    IRiMoonLine: typeof import('~icons/ri/moon-line')['default']
-    IRiSunLine: typeof import('~icons/ri/sun-line')['default']
     ListPosts: typeof import('./components/ListPosts.vue')['default']
     NavBar: typeof import('./components/NavBar.vue')['default']
     PostItem: typeof import('./components/PostItem.vue')['default']
