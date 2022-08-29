@@ -144,7 +144,7 @@ n.constructor === Number // true
 
 读者可能已经想到了，如果一个对象实例的构造函数封装了其他的构造函数，会怎么样呢？恭喜你，这就是原型链最大的秘密所在！
 
-<img src="/images/prototype3.png" class="w-full h-[200%]" rounded-lg />
+<img src="/images/prototype3.png" rounded-lg />
 
 原型对象通过[[ Prototype ]]串联起来，形成一个原型链。
 
