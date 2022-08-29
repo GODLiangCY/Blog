@@ -9,7 +9,7 @@ html {
 }
 
 html.dark {
-  --c-bg: #050505;
+  --c-bg: #151515;
   --c-scrollbar: #111;
   --c-scrollbar-hover: #222;
 }
@@ -21,20 +21,6 @@ html {
 * {
   scrollbar-color: var(--c-scrollbar) var(--c-bg);
 }
-
-/* .sponsorkit-avatar {
-  cursor: pointer;
-}
-.sponsorkit-tier-title {
-  font-weight: 600;
-  font-size: 20px;
-  fill: currentColor;
-}
-.sponsorkit-name {
-  font-weight: 300;
-  font-size: 15px;
-  transform: translateY(8px);
-} */
 
 ::-webkit-scrollbar {
   width: 6px;
