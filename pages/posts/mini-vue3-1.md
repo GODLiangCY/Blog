@@ -487,7 +487,7 @@ if (isSymbol(key) ? builtInSymbols.has(key) : isNonTrackableKeys(key)) {
 
 <img src="/images/mini-vue3-1-p2-dark.png" img-dark rounded-lg />
 
-<img src="images/mini-vue3-1-p2-light.png" img-light rounded-lg />
+<img src="/images/mini-vue3-1-p2-light.png" img-light rounded-lg />
 
 可以看到，其默认行为就会对 `length` 属性进行修改，因此不用额外对该 Symbol 执行 `track()`
 
