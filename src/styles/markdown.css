@@ -175,20 +175,18 @@ h6:focus .header-anchor {
   overflow-y: auto;
   overflow-x: hidden;
   text-overflow: ellipsis;
-  /* opacity: 0; */
   opacity: 0.5;
-  /* transition: all .4s ease-out; */
 }
-
-/* .table-of-contents:hover { */
-  /* opacity: 0.5; */
-/* } */
 
 /* make the first child of table-of-contents on the far left
    because toc only has one root child
 */
 .table-of-contents > :first-child {
   padding-left: 0 !important;
+}
+
+.table-of-contents > :first-child li > ul {
+  margin-left: -2.5rem;
 }
 
 .table-of-contents ul > li::before {
@@ -198,4 +196,3 @@ h6:focus .header-anchor {
 .prose img {
   max-width: 100%;
 }
-
