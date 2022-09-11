@@ -10,6 +10,12 @@ description: "*'What I cannot create, I do not understand' - Richard Feynman*。
 
 [[toc]]
 
+# 前言
+
+阅读了[霍春阳](https://github.com/HcySunYang)大佬所著的《Vue.js 设计与实现》一书后，学到了 Vue3 中很多的技术细节。因此，笔者尝试基于该书与 Vue 源码，写一个 mini-vue3
+
+> 真的是写得非常棒的一本书，很建议想学习研究 Vue 源码的朋友们购买
+
 # workspace
 
 [Vue3](https://github.com/vuejs/core) 整体是采用了 `pnpm workspace` 这样一种结构。那我们也来照葫芦画瓢一下。新建一个名为 mini-vue3 的文件夹，然后执行`pnpm init`，这时候项目根目录下就有了一个 package.json 文件。读者可以根据自己的需求改一下默认的 package.json，并在 `packageManager` 字段下指定 pnpm 以及其版本。随后根目录下新建 pnpm-workspace.yaml，写入
