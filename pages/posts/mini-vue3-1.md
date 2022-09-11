@@ -4,8 +4,8 @@ date: '2022-08-26'
 tags:
   - Vue
 description: "写一个响应性系统！实现 `@vue/reactivity`"
-words: 5500
-duration: 15min
+words: 6500
+duration: 17min
 ---
 
 [[toc]]
@@ -868,9 +868,162 @@ export class ComputedRefImpl<T> {
 + 传了一个 `lazy: true` 的 option，表示需要懒计算，有助于减少开销
 + `scheduler` 允许我们代替原始的 `effect`，我们利用它去做 `trigger` 和 `dirty` 标记
 
+若要实现一个可读写的 `computed`，只需稍微改动逻辑，支持调用参数中传入的 `set()` 即可
+
 # 小结
 
-实现了简单的响应性系统！
+实现了简单的响应性系统！但是比起 Vue 的响应性系统来，还有很多不足与可优化之处。下面笔者简单讲讲
+
++ 事实上，整个 `effect` 的实现借鉴了早期的实现。并且我们也没有提供 `stop` 去手动中止一个 `effect`。目前 Vue 也 class 语法糖优化了 `effect` 的代码，并且优化了追踪过程 —— 取代了用  `effectStack` 来解决嵌套 `effect` 的方案，转而使用了 `parent` 这一类成员来表示其父级 `effect`
+
+  ```typescript
+  export class ReactiveEffect<T = any> {
+    parent: ReactiveEffect | undefined = undefined
+    
+    run() {
+      let parent: ReactiveEffect | undefined = activeEffect
+      while (parent) {
+        if (parent === this) {
+          return
+        }
+        parent = parent.parent
+      }
+      
+      try {
+        this.parent = activeEffect
+        /** */
+      } finally {
+        /** */
+        this.parent = undefined
+      }
+    }
+  }
+  ```
+
+  可以看到，上述的 while 语句相当于之前的 `!effectStack.includes(effect)`，而 `this.parent = activeEffect` 与 `this.parent = undefined` 也模拟了栈行为
+
++ 对于重新追踪依赖 —— 即执行 `effect` 之前的 `cleanup`，Vue 使用了二进制相关的技巧将其做了一些优化。更多细节可以参见该 [PR](https://github.com/vuejs/core/pull/4017)，这里只简单讲讲其思路。先贴出相关的代码
+
+  ```typescript
+  // The number of effects currently being tracked recursively.
+  let effectTrackDepth = 0
+  
+  export let trackOpBit = 1
+  
+  /**
+   * The bitwise track markers support at most 30 levels of recursion.
+   * This value is chosen to enable modern JS engines to use a SMI on all platforms.
+   * When recursion depth is greater, fall back to using a full cleanup.
+   */
+  const maxMarkerBits = 30
+  
+  export class ReactiveEffect {
+    run() {
+      /** */
+      try {
+        /** */
+        trackOpBit = 1 << ++effectTrackDepth
+        
+        if (effectTrackDepth <= maxMarkerBits) {
+          initDepMarkers(this)
+        } else {
+          cleanupEffect(this)
+        }
+        return this.fn()
+      } finally {
+        if (effectTrackDepth <= maxMarkerBits) {
+          finalizeDepMarkers(this)
+        }
+  
+        trackOpBit = 1 << --effectTrackDepth
+        
+        /** */
+      }
+    }
+  }
+  
+  export function trackEffects(dep) {
+    let shouldTrack = false
+    if (effectTrackDepth <= maxMarkerBits) {
+      if (!newTracked(dep)) {
+        dep.n |= trackOpBit // set newly tracked
+        shouldTrack = !wasTracked(dep)
+      }
+    } else {
+      // Full cleanup mode.
+      shouldTrack = !dep.has(activeEffect!)
+    }
+  
+    if (shouldTrack) {
+      dep.add(activeEffect!)
+      activeEffect!.deps.push(dep)
+    }
+  }
+  ```
+  
+  ```typescript
+  /**
+   * wasTracked and newTracked maintain the status for several levels of effect
+   * tracking recursion. One bit per level is used to define whether the dependency
+   * was/is tracked.
+   */
+  type TrackedMarkers = {
+    /**
+     * wasTracked
+     */
+    w: number
+    /**
+     * newTracked
+     */
+    n: number
+  }
+  
+  export const createDep = (effects?: ReactiveEffect[]): Dep => {
+    const dep = new Set<ReactiveEffect>(effects) as Dep
+    dep.w = 0
+    dep.n = 0
+    return dep
+  }
+  
+  export const wasTracked = (dep: Dep): boolean => (dep.w & trackOpBit) > 0
+  
+  export const newTracked = (dep: Dep): boolean => (dep.n & trackOpBit) > 0
+  
+  export const initDepMarkers = ({ deps }: ReactiveEffect) => {
+    if (deps.length) {
+      for (let i = 0; i < deps.length; i++) {
+        deps[i].w |= trackOpBit // set was tracked
+      }
+    }
+  }
+  
+  export const finalizeDepMarkers = (effect: ReactiveEffect) => {
+    const { deps } = effect
+    if (deps.length) {
+      let ptr = 0
+      for (let i = 0; i < deps.length; i++) {
+        const dep = deps[i]
+        if (wasTracked(dep) && !newTracked(dep)) {
+          dep.delete(effect)
+        } else {
+          deps[ptr++] = dep
+        }
+        // clear bits
+        dep.w &= ~trackOpBit
+        dep.n &= ~trackOpBit
+      }
+      deps.length = ptr
+    }
+  }
+  ```
+  
+  一个核心的思路是，对当前的 `effect`，用一个二进制位去“标识”其依赖的状态 —— 是否被追踪过以及是不是新增的依赖。这样的二进制位有30个，这能让现代 JS 引擎使用 SMI 优化。关于什么是 SMI 优化，可参考这篇[文章](https://juejin.cn/post/7088160174493401101#heading-3)。当嵌套的 `effect` 超过30层时，仍使用之前的全量清理策略。否则，新的方案是：
+  
+  + 在 `fn` 被执行前，其所有依赖都被打上相应的标记，即 `initDepMarkers()` 所做的工作
+  + 执行 `fn` 时，由于响应性系统所做的工作，`trigger()` 被触发。在此过程中，所有本次 `effect` 执行需要的依赖，都会被打上 `dep.n |= trackOpBit` 的标记。并且，把没有追踪过的依赖，添加进 `deps`。这部分依赖也就是比较灵活的、受外部条件影响的依赖
+  + 执行结束后， 对于已经追踪过并且不是新的依赖——这部分依赖自然就是上一次执行 `effect` 需要，但是本次执行 `effect` 不需要的——将其删除。并且，清除本次执行 `effect` 的所有标记
+  
+  总的来说，这样子优化的意义在于，稳定的那部分依赖不会受到影响，并且新增的依赖会替换掉老旧的依赖
 
 # 系列指路
 
