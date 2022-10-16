@@ -52,6 +52,7 @@ export function reactive(target: object) {
 
 ```typescript
 //effect.ts
+type Dep = Set<ReactiveEffect>
 type KeyToDepMap = Map<any, Dep>
 const targetMap = new WeakMap<any, KeyToDepMap>()
 
@@ -167,7 +168,7 @@ has(target, key) {
 }
 ```
 
-`deleteProperty()` 和 `ownKeys()` 的编写就要稍微涉及到 `track()` 与 `trigger()` 逻辑的变动了，因为我们不再只需要简单地触发相关依赖了。
+`deleteProperty()` 和 `ownKeys()` 的编写就要稍微涉及到 `track()` 与 `trigger()` 逻辑的变动了，因为我们不再只需要简单地追踪或触发相关依赖了。
 
 先来看看`ownKeys()`。我们只能通过`ownKeys()` 拿到 `target` 这一个参数，这意味着我们无法和之前一样，通过一个具体的 key 值，去创建/读取 Map，存储 `ReactiveEffect`。因此，Vue 的策略是创建了一个专门的 key，即 `Symbol('iterate')`，给 `for-in` 迭代使用。
 
@@ -416,7 +417,7 @@ function createArrayInstrumentations() {
 }
 ```
 
-`includes`，`indexOf`，`lastIndexOf` 这三个原型上的方法，对于值与值之间的比较，要求严格。但是被 `reactive()` 包裹后的对象，是和自身不全等的。为了处理这种情况，会先尝试使用原始值匹配，若无，再尝试 `toRaw()` 后的值。而且，为了让“查找”也具有响应性，要对每一个元素都 `track()` 一次
+`includes`，`indexOf`，`lastIndexOf` 这三个原型上的方法，对于值与值之间的比较，要求严格。但是被 `reactive()` 包裹后的对象，是和自身不全等的，因为 `reactive()` 的返回值是一个 `Proxy`。为了处理这种情况，会先尝试使用原始值匹配，若无，再尝试 `toRaw()` 后的值，即被 `Proxy` 所代理的原始对象。而且，为了让“查找”也具有响应性，要对每一个元素都 `track()` 一次
 
 `push`，`pop`，`shift`，`unshift`，`splice` 这些会改变原数组长度的方法，在执行原方法期间，禁止任何副作用相关函数追踪依赖。这里的 `pauseTracking()` 和 `resetTracking()` 是从 `effect.ts` 中导出的，给我们提供了控制追踪的能力。其原理是
 
@@ -448,7 +449,7 @@ export function track(target: object, type: TrackOpTypes, key: unknown) {
 
 > Vue 的响应性系统不仅为使用者提供了便利，也为其渲染工作提供了强大的支持。在组件相关的源码上，也利用了这些 API 来控制正确的渲染、更新等。所以不妨待会儿把这些逻辑也加到我们的 mini-vue3 上
 
-这么做解决了以下情形
+不过，为什么这些方法要禁止任何副作用相关函数追踪依赖呢？考虑以下情形
 
 ```typescript
 const arr = reactive([])
@@ -456,7 +457,7 @@ effect(() => arr.push(1))
 effect(() => arr.push(2))
 ```
 
-若不加以禁止，会造成无限循环调用。因为 `arr.push()` 会引起 `length` 属性更改，使副作用函数与 `length` 属性建立连接。当第二个 `effect` 开始运行时，两个副作用函数就会开始循环执行了。
+若不加以禁止，会造成无限循环调用。因为 `arr.push()` 会引起 `length` 属性更改，使副作用函数与 `length` 属性建立连接。当第二个 `effect` 开始运行时，同样引起 `length` 更改，从而使第一个 `effect` 执行，两个副作用函数就会开始循环执行了。
 
 还有值得注意的一个地方是，如果 `key` 为内置的 `Symbol` ，则不会去执行 `track()`
 
@@ -511,11 +512,11 @@ effect(() => {
 
 因此，不需要对这些 Symbol 执行 `track`，也不会影响正常使用。反倒是代理 Symbol 还有可能会引起不必要的行为与错误等，因为 Symbol 大多数都与引擎实现的内部方法相关。
 
-其他 handler 的逻辑不难理解，读者可参照 Vue3 源码
+其他 handler 的逻辑不难理解，读者可参照 [Vue3 源码](https://github.com/vuejs/core/blob/main/packages/reactivity/src/baseHandlers.ts)
 
 ## 代理集合类型
 
-集合类型包括 `Map`，`WeakMap`，`Set`，`WeakSet`。读者可参照 reactivity 包下的 collectionsHandlers.ts 与相关单测，以及 `trigger()` 的相关逻辑，理解其设计
+集合类型包括 `Map`，`WeakMap`，`Set`，`WeakSet`。读者可参照 reactivity 包下的 [collectionsHandlers.ts](https://github.com/vuejs/core/blob/main/packages/reactivity/src/collectionHandlers.ts) 与[相关单测](https://github.com/vuejs/core/tree/main/packages/reactivity/__tests__/collections)，以及 `trigger()` 的相关逻辑，理解其设计
 
 类似与对数组的代理，对于集合类型的代理，同样也重写了非常多的方法
 
@@ -855,11 +856,11 @@ export class ComputedRefImpl<T> {
   }
 
   get value() {
+    trackRefValue(this)
     if (this._dirty) {
       this._value = this.effect()
       this._dirty = false
     }
-    trackRefValue(this)
     return this._value
   }
 }
