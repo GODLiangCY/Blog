@@ -783,7 +783,8 @@ export type UnwrapRefSimple<T> = T extends
 
 + 当 `ref()` 接收到的参数为 object 时，判断类型 T 是否*严格相等*于 Ref，若不是，则返回 `UnwrapRef<T>`
 
-  > T extends Ref 与 [T] extends [Ref] 并不相同。后者更加严格，表现在对于联合类型的分配上。提供一个 [clench](https://juejin.cn/user/536217406415102) 大佬当时在掘金沸点为我解惑时，使用的[例子](https://www.typescriptlang.org/play?#code/C4TwDgpgBAcg9gJwLYEMA2AeAggGigIQD4oBeKLKCAD2AgDsATAZwKgH5yoAuKAM3SYQAUKEhQAysAQBLAMbBseIqSgBtLAF1KNeszX4tHCj35pBQkeGh0V8ZOgwBGKAB8oAJldQAzHkfEoAHpAvgFoN0dLMTpnMkkZeScvTzdfKH8gkNNzKOgAJQheFQBvKAA3dABXCB46SqQAIwgEKABfC1FoFFtEVExSirRq2vqmltavUroUJBqoJilpOgBzNrwC3mJg0LNwqAGqucd3AG423KgUWIlFxIOhubrG5rbJqGnZngWZFbWoDa2WTCFm2gAJ5QCmioAQt0An9qAQxjAKP6gG8MwCHdoBm2MAoYqAC4TAJDmgAA5QBUcuVDiNnggLihPHFbgp7sN3qMXhM3FMZnNvktlnhBnSnmM-gCgA)。这么做的意义是，若 `ref()` 的参数也是一个 `ref`，那么就将子 ref 的类型提供给父 ref 使用，否则将参数类型深层解包(和 `ref` 在 `reactive` 下的解包相匹配，因为对象类型的值会经 `reactive` 处理)，再作为 value 的类型
+  > T extends Ref 与 [T] extends [Ref] 并不相同，表现在对于联合类型(即 `union`)的处理上。后者不会分发 union,而是将整个 union 作为一个整体。可参考 [TS 文档](https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types)的解释。并提供一个 [clench](https://juejin.cn/user/536217406415102) 大佬当时在掘金沸点为我解惑时，使用的[例子](https://www.typescriptlang.org/play?#code/C4TwDgpgBAcg9gJwLYEMA2AeAggGigIQD4oBeKLKCAD2AgDsATAZwKgH5yoAuKAM3SYQAUKEhQAysAQBLAMbBseIqSgBtLAF1KNeszX4tHCj35pBQkeGh0V8ZOgwBGKAB8oAJldQAzHkfEoAHpAvgFoN0dLMTpnMkkZeScvTzdfKH8gkNNzKOgAJQheFQBvKAA3dABXCB46SqQAIwgEKABfC1FoFFtEVExSirRq2vqmltavUroUJBqoJilpOgBzNrwC3mJg0LNwqAGqucd3AG423KgUWIlFxIOhubrG5rbJqGnZngWZFbWoDa2WTCFm2gAJ5QCmioAQt0An9qAQxjAKP6gG8MwCHdoBm2MAoYqAC4TAJDmgAA5QBUcuVDiNnggLihPHFbgp7sN3qMXhM3FMZnNvktlnhBnSnmM-gCgA)。
+  这么做的意义是，若 `ref()` 的参数也是一个 `ref`，那么就将子 ref 的类型提供给父 ref 使用，否则将参数类型深层解包(和 `ref` 在 `reactive` 下的解包相匹配，因为对象类型的值会经 `reactive` 处理)，再作为 value 的类型
 
 + 当 `ref()` 接收到的参数值类型为普通类型时，自然就直接返回 `Ref<UnwrapRef<T>>`
 
