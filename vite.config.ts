@@ -1,5 +1,5 @@
-import { defineConfig } from 'vite'
 import { resolve } from 'path'
+import { defineConfig } from 'vite'
 import fs from 'fs-extra'
 import matter from 'gray-matter'
 import Vue from '@vitejs/plugin-vue'
@@ -12,9 +12,9 @@ import Unocss from 'unocss/vite'
 import MarkDown from 'vite-plugin-vue-markdown'
 import Prism from 'markdown-it-prism'
 import Anchor from 'markdown-it-anchor'
-import { slugify } from './scripts/slugify'
 import LinkAttributes from 'markdown-it-link-attributes'
 import TOC from 'markdown-it-table-of-contents'
+import { slugify } from './scripts/slugify'
 import { getLastUpdateTime } from './scripts/utils'
 
 import 'prismjs/components/prism-javascript.js'
@@ -26,47 +26,42 @@ import 'prismjs/components/prism-markdown.js'
 export default defineConfig({
   plugins: [
     Vue({
-      include: [/\.vue$/, /\.md$/]
+      include: [/\.vue$/, /\.md$/],
     }),
 
     Pages({
       extensions: ['vue', 'md'],
       dirs: [
         { dir: './pages', baseRoute: '' },
-        { dir: './pages/posts', baseRoute: 'posts' }
+        { dir: './pages/posts', baseRoute: 'posts' },
       ],
       extendRoute(route) {
         const path = resolve(__dirname, route.component.slice(1))
 
         const md = fs.readFileSync(path, 'utf8')
         const { data } = matter(md)
-        route.meta = Object.assign(route.meta || {}, { frontmatter: {...data, lastUpdateTime: getLastUpdateTime(path)} })
+        route.meta = Object.assign(route.meta || {}, { frontmatter: { ...data, lastUpdateTime: getLastUpdateTime(path) } })
 
         return route
-      }
+      },
     }),
 
     AutoImport({
       imports: [
         'vue',
-        'vue-router'
+        'vue-router',
       ],
-      dts: './src/auto-imports.d.ts',
       resolvers: [
-        IconsResolver()
+        IconsResolver(),
       ],
-      eslintrc: {
-        enabled: true
-      }
     }),
 
     Components({
       extensions: ['vue', 'md'],
       include: [/\.vue$/, /\.vue\?vue/, /\.md$/],
-      dts: './src/components.d.ts',
       resolvers: [
-        IconsResolver()
-      ]
+        IconsResolver(),
+      ],
     }),
 
     Icons(),
@@ -103,21 +98,20 @@ export default defineConfig({
           includeLevel: [1, 2, 3],
           slugify,
         })
-
-      }
-    })
+      },
+    }),
   ],
   resolve: {
     alias: {
       '~/': `${resolve(__dirname, './src')}/`,
-    }
+    },
   },
   optimizeDeps: {
     include: [
       'vue',
       'vue-router',
       '@vueuse/core',
-      'dayjs'
-    ]
-  }
+      'dayjs',
+    ],
+  },
 })

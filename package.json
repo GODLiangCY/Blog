@@ -1,12 +1,12 @@
 {
-  "private": true,
   "type": "module",
+  "private": true,
   "packageManager": "pnpm@7.5.2",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite-ssg build && esno ./scripts/rss.ts",
     "preview": "vite preview",
-    "lint": "eslint --ext .js,.ts,.vue,.json,.md .",
+    "lint": "eslint --ext .js,.ts,.vue,.json .",
     "lint:fix": "pnpm lint --fix"
   },
   "dependencies": {
@@ -16,6 +16,7 @@
     "vue-router": "^4.1.6"
   },
   "devDependencies": {
+    "@antfu/eslint-config": "^0.30.1",
     "@iconify/json": "^2.1.136",
     "@types/fs-extra": "^9.0.13",
     "@types/lodash": "^4.14.188",

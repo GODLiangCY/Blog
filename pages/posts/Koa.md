@@ -52,17 +52,17 @@ description: 'Koa向来以小而美著称，简洁且易于上手，是小项目
 const Emitter = require('events')
 
 module.exports = class Application extends Emitter {
-    constructor(options) {
-        super()
-        
-        // initalize...
-    }
-    
-    // 起一个服务器
-    listen(...args) { }
-    
-    // 注册middleware
-    use(fn) { }
+  constructor(options) {
+    super()
+
+    // initalize...
+  }
+
+  // 起一个服务器
+  listen(...args) { }
+
+  // 注册middleware
+  use(fn) { }
 }
 ```
 
@@ -79,15 +79,15 @@ module.exports = class Application extends Emitter {
 > 以下示例展示了使用单个监听器的简单的 `EventEmitter` 实例。 `eventEmitter.on()` 方法用于注册监听器，`eventEmitter.emit()` 方法用于触发事件。
 >
 > ```js
-> const EventEmitter = require('node:events');
+> const EventEmitter = require('node:events')
 > 
 > class MyEmitter extends EventEmitter {}
 > 
-> const myEmitter = new MyEmitter();
+> const myEmitter = new MyEmitter()
 > myEmitter.on('event', () => {
->   console.log('an event occurred!');
-> });
-> myEmitter.emit('event');
+>   console.log('an event occurred!')
+> })
+> myEmitter.emit('event')
 > ```
 
 这种经典的 `.on` 式的回调写法，在 Node 中无处不在，如 http.Server 等。可以说 `EventEmitter` 是 Node 异步 IO 机制的基石。
@@ -100,18 +100,19 @@ module.exports = class Application extends Emitter {
 
 ```js
 class Application extends Emitter {
-    constructor(options) {
-        super()
-        this.middleware = []    // 存放中间件
-        // ...
-    }
-    
-    use(fn) {
-        if (typeof fn !== 'function') throw new TypeError('middleware must be a function!')
-        debug('use %s', fn._name || fn.name || '-')
-        this.middleware.push(fn)
-        return this        // 提供链式调用的能力
-    }
+  constructor(options) {
+    super()
+    this.middleware = [] // 存放中间件
+    // ...
+  }
+
+  use(fn) {
+    if (typeof fn !== 'function')
+      throw new TypeError('middleware must be a function!')
+    debug('use %s', fn._name || fn.name || '-')
+    this.middleware.push(fn)
+    return this // 提供链式调用的能力
+  }
 }
 ```
 
@@ -122,55 +123,56 @@ const compose = require('koa-compose')
 const onFinished = require('on-finished')
 
 class Application extends Emitter {
-    listen (...args) {
-        debug('listen')
-        const server = http.createServer(this.callback())   // 通过原生的http.createServer创建
-        return server.listen(...args)
+  listen(...args) {
+    debug('listen')
+    const server = http.createServer(this.callback()) // 通过原生的http.createServer创建
+    return server.listen(...args)
+  }
+
+  // 为Node的原生http server返回一个request handler
+  callback() {
+    // 将所有的中间件组合成一个函数，该函数返回一个Promise
+    const fn = compose(this.middleware)
+
+    // 如果没有注册error回调，则注册默认的onerror
+    if (!this.listenerCount('error'))
+      this.on('error', this.onerror)
+
+    const handleRequest = (req, res) => {
+      const ctx = this.createContext(req, res)
+      return this.handleRequest(ctx, fn)
     }
-    
-    // 为Node的原生http server返回一个request handler
-    callback() {
-        // 将所有的中间件组合成一个函数，该函数返回一个Promise
-        const fn = compose(this.middleware)
 
-        // 如果没有注册error回调，则注册默认的onerror
-        if (!this.listenerCount('error')) this.on('error', this.onerror)
+    return handleRequest
+  }
 
-        const handleRequest = (req, res) => {
-          const ctx = this.createContext(req, res)
-          return this.handleRequest(ctx, fn)
-        }
-
-        return handleRequest
-    }
-    
-    handleRequest (ctx, fnMiddleware) {
-        const res = ctx.res
-        res.statusCode = 404
-        const onerror = err => ctx.onerror(err)
-        const handleResponse = () => respond(ctx)
-        // on-finished包的作用是
-        // Execute a callback when a HTTP request closes, finishes, or errors.
-        // 这行代码会在res出错时，执行onerror函数
-        onFinished(res, onerror)
-        // ctx会作为最初的context，传给中间件
-        return fnMiddleware(ctx).then(handleResponse).catch(onerror)
+  handleRequest(ctx, fnMiddleware) {
+    const res = ctx.res
+    res.statusCode = 404
+    const onerror = err => ctx.onerror(err)
+    const handleResponse = () => respond(ctx)
+    // on-finished包的作用是
+    // Execute a callback when a HTTP request closes, finishes, or errors.
+    // 这行代码会在res出错时，执行onerror函数
+    onFinished(res, onerror)
+    // ctx会作为最初的context，传给中间件
+    return fnMiddleware(ctx).then(handleResponse).catch(onerror)
   	}
-    
-    // 根据请求与响应，创建上下文
-    createContext(req, res) {
-        
-    }
-    
-    //默认error handler
-    onerror(err) {
-        
-    }
+
+  // 根据请求与响应，创建上下文
+  createContext(req, res) {
+
+  }
+
+  // 默认error handler
+  onerror(err) {
+
+  }
 }
 
 // response helper
-function respond(ctx) { 
-	//...
+function respond(ctx) {
+  // ...
 }
 ```
 
@@ -197,10 +199,12 @@ module.exports = compose
  * @api public
  */
 
-function compose (middleware) {
-  if (!Array.isArray(middleware)) throw new TypeError('Middleware stack must be an array!')
+function compose(middleware) {
+  if (!Array.isArray(middleware))
+    throw new TypeError('Middleware stack must be an array!')
   for (const fn of middleware) {
-    if (typeof fn !== 'function') throw new TypeError('Middleware must be composed of functions!')
+    if (typeof fn !== 'function')
+      throw new TypeError('Middleware must be composed of functions!')
   }
 
   /**
@@ -213,15 +217,19 @@ function compose (middleware) {
     // last called middleware #
     let index = -1
     return dispatch(0)
-    function dispatch (i) {
-      if (i <= index) return Promise.reject(new Error('next() called multiple times'))
+    function dispatch(i) {
+      if (i <= index)
+        return Promise.reject(new Error('next() called multiple times'))
       index = i
       let fn = middleware[i]
-      if (i === middleware.length) fn = next
-      if (!fn) return Promise.resolve()
+      if (i === middleware.length)
+        fn = next
+      if (!fn)
+        return Promise.resolve()
       try {
         return Promise.resolve(fn(context, dispatch.bind(null, i + 1)))
-      } catch (err) {
+      }
+      catch (err) {
         return Promise.reject(err)
       }
     }
