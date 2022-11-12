@@ -10,11 +10,6 @@ const CHECK_INTERVAL = 50
 const DEFAULT_DELAY = 200
 const DEFAULT_DISTANCE = 0
 
-interface ScrollOptions {
-  delay: number
-  distance: number
-  immediate: boolean
-}
 type InfiniteScrollCallback = () => void
 type InfiniteScrollEl = HTMLElement & {
   [SCOPE]: {

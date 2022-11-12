@@ -37,7 +37,9 @@ const lastUpdateTime = route.meta.frontmatter.lastUpdateTime
         cd ..
       </router-link>
     </div>
-    <BackToTop />
+    <ClientOnly>
+      <BackToTop />
+    </ClientOnly>
     <FooterBar />
   </div>
 </template>
