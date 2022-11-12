@@ -15,6 +15,7 @@ defineEmits<{
   (e: 'tagClick', name: string): void
 }>()
 
+// eslint-disable-next-line new-cap
 const md = new it()
 const desc = md.render(props.description)
 </script>
