@@ -108,6 +108,7 @@ export default defineConfig({
       'vue-router',
       '@vueuse/core',
       'dayjs',
+      'dayjs/plugin/customParseFormat',
     ],
   },
 })
