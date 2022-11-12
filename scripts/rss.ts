@@ -53,7 +53,7 @@ async function buildBlogRSS() {
 
           return {
             ...data,
-            date: new Date(dayjs(data.date, 'YYYY-MM-DD').valueOf()),
+            date: new Date(dayjs(data.date).valueOf()),
             content: html,
             author: [AUTHOR],
             link: DOMAIN + i.replace(/^pages(.+)\.md$/, '$1'),
@@ -62,7 +62,7 @@ async function buildBlogRSS() {
     ))
     .filter(Boolean)
 
-  posts.sort((a, b) => dayjs(b.date, 'YYYY-MM-DD').valueOf() - dayjs(a.date, 'YYYY-MM-DD').valueOf())
+  posts.sort((a, b) => dayjs(b.date).valueOf() - dayjs(a.date).valueOf())
 
   await writeFeed('feed', options, posts)
 }
