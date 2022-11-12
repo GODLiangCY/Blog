@@ -25,6 +25,3 @@ dist-ssr
 
 #temp
 .vite-ssg-temp
-
-auto-imports.d.ts
-components.d.ts
