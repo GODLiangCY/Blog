@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import it from 'markdown-it'
 
-defineEmits<{
-  (e: 'tagClick', name: string): void
-}>()
-
 const props = defineProps<{
   date: string
   duration: string
@@ -15,9 +11,12 @@ const props = defineProps<{
   words: number
 }>()
 
+defineEmits<{
+  (e: 'tagClick', name: string): void
+}>()
+
 const md = new it()
 const desc = md.render(props.description)
-
 </script>
 
 <template>
@@ -33,12 +32,11 @@ const desc = md.render(props.description)
       <span flex items-center><i-bi:book mr-3 />{{ props.words }}</span>
       <span flex items-center><i-ep:timer mr-3 />{{ props.duration }}</span>
     </div>
-    <div v-html="desc" class="prose mt-1">
-    </div>
+    <div class="prose mt-1" v-html="desc" />
     <div flex items-center flex-wrap>
       <div v-for="tag of props.tags" :key="tag" flex items-center mt-4 class="basis-1/4">
         <i-carbon:tag-group hover:cursor-pointer @click="$emit('tagClick', tag)" />
-        <span hover:cursor-pointer hover:underline @click="$emit('tagClick', tag)" >{{ tag }}</span>
+        <span hover:cursor-pointer hover:underline @click="$emit('tagClick', tag)">{{ tag }}</span>
       </div>
     </div>
   </div>

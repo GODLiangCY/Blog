@@ -41,8 +41,8 @@ description: '主要对JS的类型转换规则进行了大体阐述，以经典�
   ```js
   // example
   const date = new Date()
-  console.log(typeof date)   // object
-  console.log(date instanceof Object)  // true
+  console.log(typeof date) // object
+  console.log(date instanceof Object) // true
   ```
 
 
@@ -166,18 +166,18 @@ description: '主要对JS的类型转换规则进行了大体阐述，以经典�
 
 ```js
 const obj = {
-    valueOf() {
-        return 123
-    },
-    toString() {
-        return 'I am an Object'
-    },
-    [Symbol.toPrimitive]() {
-        return true
-    }
+  valueOf() {
+    return 123
+  },
+  toString() {
+    return 'I am an Object'
+  },
+  [Symbol.toPrimitive]() {
+    return true
+  }
 }
-console.log(String(obj))  // 'true'
-console.log(obj == 1)  // true
+console.log(String(obj)) // 'true'
+console.log(obj == 1) // true
 ```
 
 &emsp;&emsp;如果没有该属性，其次是调用 `valueOf()`，如果 `valueOf()` 不存在或者不返回一个基本类型值，最后再调用 `toString()`。`toString()` 也不返回呢？那么转换就失败了，会出现 error。
@@ -222,8 +222,8 @@ console.log(obj == 1)  // true
   在`+`的转化规则下，两个空数组都调用 `toString()` 成为空字符串再进行拼接，答案自然是空字符串
 
 + ```js
-  console.log([] + {})  // "[object Object]"
-  console.log({} + [])  // 0
+  console.log([] + {}) // "[object Object]"
+  console.log({} + []) // 0
   ```
 
   在`[] + {}`中，JS 引擎解析这条语句，认为它在做空数组 + 空对象这一操作，而`{}`被转化为字符串的结果是`[object Object]`

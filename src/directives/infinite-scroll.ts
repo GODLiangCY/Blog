@@ -1,8 +1,8 @@
 // this is a fork from the impletions of element-plus
-import type { ObjectDirective, ComponentPublicInstance } from 'vue'
+import type { ComponentPublicInstance, ObjectDirective } from 'vue'
 import { nextTick } from 'vue'
-import { getOffsetTopDistance, getScrollContainer } from '~/utils'
 import lodash from 'lodash'
+import { getOffsetTopDistance, getScrollContainer } from '~/utils'
 const { throttle } = lodash
 
 const SCOPE = 'InfiniteScroll'
@@ -10,7 +10,7 @@ const CHECK_INTERVAL = 50
 const DEFAULT_DELAY = 200
 const DEFAULT_DISTANCE = 0
 
-type ScrollOptions = {
+interface ScrollOptions {
   delay: number
   distance: number
   immediate: boolean
@@ -38,43 +38,44 @@ const destroyObserver = (el: InfiniteScrollEl) => {
 }
 
 const handleScroll = (el: InfiniteScrollEl, cb: InfiniteScrollCallback) => {
-  const { container, containerEl, instance, observer, lastScrollTop } =
-    el[SCOPE]
+  const { container, containerEl, instance, observer, lastScrollTop }
+    = el[SCOPE]
   const { clientHeight, scrollHeight, scrollTop } = containerEl
   const delta = scrollTop - lastScrollTop
 
   el[SCOPE].lastScrollTop = scrollTop
 
   // trigger only if full check has done and not disabled and scroll down
-  if (observer || delta < 0) return
+  if (observer || delta < 0)
+    return
 
   let shouldTrigger = false
 
   if (container === el) {
     shouldTrigger = scrollHeight - (clientHeight + scrollTop) <= DEFAULT_DISTANCE
-  } else {
+  }
+  else {
     // get the scrollHeight since el might be visible overflow
     const { clientTop, scrollHeight: height } = el
     const offsetTop = getOffsetTopDistance(el, containerEl)
-    shouldTrigger =
-      scrollTop + clientHeight >= offsetTop + clientTop + height - DEFAULT_DISTANCE
+    shouldTrigger
+      = scrollTop + clientHeight >= offsetTop + clientTop + height - DEFAULT_DISTANCE
   }
 
-  if (shouldTrigger) {
+  if (shouldTrigger)
     cb.call(instance)
-  }
 }
 
 function checkFull(el: InfiniteScrollEl, cb: InfiniteScrollCallback) {
   const { containerEl, instance } = el[SCOPE]
 
-  if (containerEl.clientHeight === 0) return
+  if (containerEl.clientHeight === 0)
+    return
 
-  if (containerEl.scrollHeight <= containerEl.clientHeight) {
+  if (containerEl.scrollHeight <= containerEl.clientHeight)
     cb.call(instance)
-  } else {
+  else
     destroyObserver(el)
-  }
 }
 
 export const vInfiniteScroll: ObjectDirective<
@@ -83,17 +84,18 @@ export const vInfiniteScroll: ObjectDirective<
 > = {
   async mounted(el, binding) {
     const { instance, value: cb } = binding
-  
+
     await nextTick()
 
     const container = getScrollContainer(el)
-    const containerEl =
-      container === window
+    const containerEl
+      = container === window
         ? document.documentElement
         : (container as HTMLElement)
-    const onScroll = throttle(handleScroll.bind(null, el, cb), DEFAULT_DELAY) 
-    
-    if (!container) return
+    const onScroll = throttle(handleScroll.bind(null, el, cb), DEFAULT_DELAY)
+
+    if (!container)
+      return
 
     el[SCOPE] = {
       instance: instance as ComponentPublicInstance,
@@ -101,11 +103,11 @@ export const vInfiniteScroll: ObjectDirective<
       container,
       containerEl,
       onScroll,
-      lastScrollTop: containerEl.scrollTop
+      lastScrollTop: containerEl.scrollTop,
     }
 
     const observer = new MutationObserver(
-      throttle(checkFull.bind(null, el, cb), CHECK_INTERVAL)
+      throttle(checkFull.bind(null, el, cb), CHECK_INTERVAL),
     )
     el[SCOPE].observer = observer
     observer.observe(el, { childList: true, subtree: true })
@@ -120,10 +122,10 @@ export const vInfiniteScroll: ObjectDirective<
     destroyObserver(el)
   },
   async updated(el) {
-    if (!el[SCOPE]) await nextTick()
+    if (!el[SCOPE])
+      await nextTick()
     const { containerEl, cb, observer } = el[SCOPE]
-    if (containerEl.clientHeight && observer) {
+    if (containerEl.clientHeight && observer)
       checkFull(el, cb)
-    }
-  }
+  },
 }

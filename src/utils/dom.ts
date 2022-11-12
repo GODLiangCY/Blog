@@ -7,19 +7,20 @@ export const isScroll = (el: HTMLElement, isVertical?: boolean): boolean => {
     } as const
   )[String(isVertical)]!
   const overflow = (el.style as any)[key]
-  return ['scroll', 'auto', 'overlay'].some((s) => overflow.includes(s))
+  return ['scroll', 'auto', 'overlay'].some(s => overflow.includes(s))
 }
 
 export const getScrollContainer = (
   el: HTMLElement,
-  isVertical?: boolean
+  isVertical?: boolean,
 ): Window | HTMLElement | undefined => {
   let parent: HTMLElement = el
   while (parent) {
     if ([window, document, document.documentElement].includes(parent))
       return window
 
-    if (isScroll(parent, isVertical)) return parent
+    if (isScroll(parent, isVertical))
+      return parent
 
     parent = parent.parentNode as HTMLElement
   }
@@ -41,7 +42,7 @@ export const getOffsetTop = (el: HTMLElement) => {
 
 export const getOffsetTopDistance = (
   el: HTMLElement,
-  containerEl: HTMLElement
+  containerEl: HTMLElement,
 ) => {
   return Math.abs(getOffsetTop(el) - getOffsetTop(containerEl))
 }

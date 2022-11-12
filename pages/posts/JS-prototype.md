@@ -39,7 +39,7 @@ description: '深入浅出，揭开**Prototype**的神秘面纱！'
 + 字面量声明形式
 
     ```js
-    let a = {
+    const a = {
       name: 'zhangsan'
     }
     ```
@@ -48,17 +48,17 @@ description: '深入浅出，揭开**Prototype**的神秘面纱！'
 
   ```js
   function b() {
-    this.name = "zhangsan"
+    this.name = 'zhangsan'
   }
   
-  let a = new b()
+  const a = new b()
   ```
   
 
 事实上，字面量声明形式可以看作是一种语法糖。我们可以这样子等价改写成构造形式
 
 ```js
-let a = new Object()
+const a = new Object()
 a.name = 'zhangsan'
 ```
 
@@ -110,13 +110,13 @@ console.log(Object.getPrototypeOf(obj).constructor === Proto) // true
 
 ```js
 function Proto() {
-    this.name = 'zhangsan'
+  this.name = 'zhangsan'
 }
 
 function Parent() { }
 Parent.prototype = new Proto()
 
-console.log(Parent.prototype.constructor)   // Proto
+console.log(Parent.prototype.constructor) // Proto
 ```
 
 按图来说，`Parent.prototype.constructor === Parent`才是我们想要的结果。这是因为我们手动将整个 `Parent.prototype` 改写了，破坏了默认行为。
@@ -156,7 +156,7 @@ const obj = {
   name: 'zhangsan'
 }
 
-obj.name    // 'zhangsan'
+obj.name // 'zhangsan'
 ```
 不就是搜索作用域，找到 obj，再访问其内存吗？
 
@@ -194,7 +194,7 @@ arr.sort((a, b) => a - b)
 
    ```js
    function Proto() {
-       this.nums = [1, 2, 3]
+     this.nums = [1, 2, 3]
    }
    
    function Parent() {}
@@ -204,7 +204,7 @@ arr.sort((a, b) => a - b)
    const child2 = new Parent()
    
    child1.nums.push(4)
-   console.log(child1.nums, child2.nums)  // [1, 2, 3, 4], [1, 2, 3, 4]
+   console.log(child1.nums, child2.nums) // [1, 2, 3, 4], [1, 2, 3, 4]
    ```
 
 2. 子类型在实例化时不能给父类型的构造函数传参
@@ -213,11 +213,11 @@ arr.sort((a, b) => a - b)
 
    ```js
    function Proto() {
-       this.nums = [1, 2, 3]
+     this.nums = [1, 2, 3]
    }
    
    function Parent(name) {
-       this.name = name || 'zhangsan'
+     this.name = name || 'zhangsan'
    }
    Parent.prototype = new Proto()
    ```
@@ -232,24 +232,24 @@ arr.sort((a, b) => a - b)
 
 ```js
 function Proto(name) {
-    this.nums = [1, 2, 3]
-    this.name = name
+  this.nums = [1, 2, 3]
+  this.name = name
 }
-Proto.prototype.hello = function() {
-    return `hello, ${this.name}!`
+Proto.prototype.hello = function () {
+  return `hello, ${this.name}!`
 }
 
 function Parent(name) {
-    Proto.call(this, name ?? 'zhangsan')
+  Proto.call(this, name ?? 'zhangsan')
 }
 
 const child1 = new Parent()
 const child2 = new Parent('luoxiang')
 
-console.log(child1.name, child2.name)   // "zhangsan", "luoxiang"
+console.log(child1.name, child2.name) // "zhangsan", "luoxiang"
 
 child1.nums.push(4)
-console.log(child1.nums, child2.nums)  // [1, 2, 3, 4], [1, 2, 3]
+console.log(child1.nums, child2.nums) // [1, 2, 3, 4], [1, 2, 3]
 
 console.log(child1.hello()) // TypeError: child1.hello is not a function
 ```
@@ -262,27 +262,27 @@ console.log(child1.hello()) // TypeError: child1.hello is not a function
 
 ```js
 function Proto(name) {
-    this.nums = [1, 2, 3]
-    this.name = name
+  this.nums = [1, 2, 3]
+  this.name = name
 }
-Proto.prototype.hello = function() {
-    return `hello, ${this.name}!`
+Proto.prototype.hello = function () {
+  return `hello, ${this.name}!`
 }
 
 function Parent(name) {
-    Proto.call(this, name ?? 'zhangsan')  // 第二次调用Proto
+  Proto.call(this, name ?? 'zhangsan') // 第二次调用Proto
 }
-Parent.prototype = new Proto()   // 第一次调用Proto
+Parent.prototype = new Proto() // 第一次调用Proto
 Parent.prototype.constructor = Parent
 
 const child1 = new Parent()
 const child2 = new Parent('luoxiang')
 
-console.log(child1.hello())  // "hello, zhangsan!"
-console.log(child2.hello())  // "hello, luoxiang!"
+console.log(child1.hello()) // "hello, zhangsan!"
+console.log(child2.hello()) // "hello, luoxiang!"
 
 child1.nums.push(4)
-console.log(child1.nums, child2.nums)  // [1, 2, 3, 4], [1, 2, 3]
+console.log(child1.nums, child2.nums) // [1, 2, 3, 4], [1, 2, 3]
 ```
 
 然而其也有一个效率问题，它调用了两次 `Proto`，这带来了一个小小的问题
@@ -324,13 +324,13 @@ Parent.prototype = Object.create(Proto.prototype)
 `Object.create()` 干了什么事？看看它的简易 `Polyfill` 代码，相信你就明白了
 
 ```js
-Object.create = function(proto, propertiesObject) {
-    // ...
-    
-    function F() {}
-    F.prototype = proto
-    
-    return new F()
+Object.create = function (proto, propertiesObject) {
+  // ...
+
+  function F() {}
+  F.prototype = proto
+
+  return new F()
 }
 ```
 

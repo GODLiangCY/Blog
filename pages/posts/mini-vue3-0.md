@@ -35,7 +35,7 @@ packages:
 "editor.codeActionsOnSave": {
   "source.fixAll": false,
   "source.fixAll.eslint": true,   // this allows ESLint to auto fix on save
-  "source.organizeImports": false  // if set to true, this will add a semi to the end of the line, mdzz
+  "source.organizeImports": false  // if set to true, this will add a semi to the end of the line
 },
 "eslint.validate": [
   "javascript",
