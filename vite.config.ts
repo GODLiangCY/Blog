@@ -72,7 +72,12 @@ export default defineConfig({
         quotes: '""\'\'',
       },
       markdownItSetup(md) {
-        md.use(Shiki)
+        md.use(Shiki, {
+          theme: {
+            dark: 'github-dark',
+            light: 'github-light',
+          },
+        })
 
         md.use(Anchor, {
           slugify,
