@@ -1,9 +1,12 @@
 <script setup lang="ts">
+import { useHead } from '@vueuse/head'
 import type { FrontMatter } from '~/types'
 
 const { frontmatter } = defineProps<{
   frontmatter: FrontMatter
 }>()
+
+useHead({ title: frontmatter.title })
 
 const route = useRoute()
 
@@ -15,7 +18,7 @@ const lastUpdateTime = route.meta.frontmatter.lastUpdateTime
 
 <template>
   <div>
-    <div v-if="frontmatter.title" class="prose m-auto mb-8">
+    <div v-if="route.path !== '/posts' && frontmatter.title" class="prose m-auto mb-8">
       <h1 class="mb-0">
         {{ frontmatter.title }}
       </h1>
