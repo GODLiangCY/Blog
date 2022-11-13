@@ -36,7 +36,7 @@ duration: 17min
 // reactive.ts
 import { track, trigger } from './effect.ts'
 export function reactive(target: object) {
-	return new Proxy(target, {
+  return new Proxy(target, {
     get(target, key) {
       track(target, key)
       return target[key]
@@ -132,6 +132,20 @@ export function trigger(target: object, key: unknown) {
     [...effects].forEach(effect => effect())
   }
 }
+```
+
+`reactive()` 返回了一个代理对象，使得我们能够"侦测"，"监听"其属性的更改。而 `effect(fn)` 使得 `fn` 也具有了"响应性"，我们可以像这样使用它们
+```typescript
+// effect.test.ts
+it('should observe basic properties', () => {
+  let dummy
+  const counter = reactive({ num: 0 })
+  effect(() => (dummy = counter.num))
+
+  expect(dummy).toBe(0)
+  counter.num = 7
+  expect(dummy).toBe(7)
+})
 ```
 
 终端运行 `pnpm test`，所有单测也都成功通过了。当然，单测是从 Vue3 的仓库直接 copy 过来的。可以看到，我们利用 `Proxy` 和 `WeakMap<Target, <Map<any, Dep>>>` 数据结构，实现了基本的响应能力，而且是”自动“的，只要对一个响应性对象进行读写，`track()` 与 `trigger()` 就会被触发，使得 `effect` 自动执行。在执行副作用函数之前，`cleanup()` 函数清理了它与 `Dep` 之间的依赖关系，这使响应性系统能够应付分支切换( e.g. 三元表达式)的情况。`effectStack` 存储 `effect` ，使嵌套 `effect` 能够运行。
