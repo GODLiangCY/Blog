@@ -99,6 +99,12 @@ export default defineConfig({
             dark: 'github-dark',
             light: 'github-light',
           },
+          langs: [
+            'javascript',
+            'typescript',
+            'yaml',
+            'json',
+          ],
         })
       },
     }),
