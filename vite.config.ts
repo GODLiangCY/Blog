@@ -11,11 +11,11 @@ import IconsResolver from 'unplugin-icons/resolver'
 import Unocss from 'unocss/vite'
 import MarkDown from 'vite-plugin-vue-markdown'
 import Anchor from 'markdown-it-anchor'
-import Shiki from 'markdown-it-shiki'
 import LinkAttributes from 'markdown-it-link-attributes'
 import TOC from 'markdown-it-table-of-contents'
 import { slugify } from './scripts/slugify'
 import { getLastUpdateTime } from './scripts/utils'
+import { highlightPlugin } from './plugins/highlight'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -72,13 +72,6 @@ export default defineConfig({
         quotes: '""\'\'',
       },
       markdownItSetup(md) {
-        md.use(Shiki, {
-          theme: {
-            dark: 'github-dark',
-            light: 'github-light',
-          },
-        })
-
         md.use(Anchor, {
           slugify,
           permalink: Anchor.permalink.linkInsideHeader({
@@ -98,6 +91,14 @@ export default defineConfig({
         md.use(TOC, {
           includeLevel: [1, 2, 3],
           slugify,
+        })
+
+        // inspired by markdown-it-shiki
+        md.use(highlightPlugin, {
+          theme: {
+            dark: 'github-dark',
+            light: 'github-light',
+          },
         })
       },
     }),
