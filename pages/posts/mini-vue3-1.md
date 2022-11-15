@@ -221,7 +221,7 @@ export const enum TriggerOpTypes {
 
 
 
-```typescript
+```typescript {26-35}
 // effect.ts
 export function track(
   target: object,
@@ -274,7 +274,7 @@ export function triggerEffects(dep: Dep | ReactiveEffect[]) {
 
 ```
 
-```typescript
+```typescript {37-41, 58-60}
 // baseHandler.ts
 get(target: Target, key, receiver: object) {
   // this works with `isReactive()` API
@@ -637,7 +637,7 @@ export const readonlyHandlers: ProxyHandler<object> = {
 
 其 `get()` 的逻辑与 `reactive()` 十分相似，因此考虑把逻辑封装提出出来。
 
-```typescript
+```typescript {25-27, 30-32}
 export const mutableHandlers: ProxyHandler<object> = {
   get: createGetter()
 }
@@ -920,7 +920,7 @@ export class ComputedRefImpl<T> {
 
 + 对于重新追踪依赖 —— 即执行 `effect` 之前的 `cleanup`，Vue 使用了二进制相关的技巧将其做了一些优化。更多细节可以参见该 [PR](https://github.com/vuejs/core/pull/4017)，这里只简单讲讲其思路。先贴出相关的代码
 
-  ```typescript
+  ```typescript {18-24, 27-31, 41-50}
   // The number of effects currently being tracked recursively.
   let effectTrackDepth = 0
   
@@ -950,7 +950,7 @@ export class ComputedRefImpl<T> {
         if (effectTrackDepth <= maxMarkerBits) {
           finalizeDepMarkers(this)
         }
-  
+        
         trackOpBit = 1 << --effectTrackDepth
         
         /** */

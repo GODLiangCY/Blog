@@ -7,6 +7,21 @@ html:not(.dark) .shiki-dark {
   display: none;
 }
 
+pre.shiki span[class*="highlighted"] {
+  margin: 0 -24px;
+  padding: 0 24px;
+  width: calc(100% + 48px);
+  display: inline-block;
+}
+
+.shiki-dark .highlighted-dark {
+  background-color: teal;
+}
+
+.shiki-light .highlighted-light {
+  background-color: lightsalmon;
+}
+
 .prose .shiki {
   font-size: 1.1em;
 }
