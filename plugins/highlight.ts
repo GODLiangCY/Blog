@@ -9,6 +9,7 @@ interface Options {
     dark: IThemeRegistration
     light: IThemeRegistration
   }
+  langs: ILanguageRegistration[]
 }
 
 interface HightlightCodeOptions {
@@ -48,7 +49,11 @@ const attrsToLines = (attrs: string): HtmlRendererOptions['lineOptions'] => {
 const syncRun: TypeSyncRun = createSyncFn(join(__dirname, './workers/highlightWorker.ts'), { tsRunner: 'ts-node' })
 
 export const highlightPlugin: MarkdownIt.PluginWithOptions<Options> = (md, options) => {
-  const { theme } = options
+  const { theme, langs } = options
+  const themes: IThemeRegistration[] = []
+  for (const key in theme)
+    themes.push(theme[key])
+  syncRun('getHighlighter', { themes, langs })
 
   const highlightCode: HighlightCodeFn = (code, lang, options) => {
     const { lineOptions, theme } = options ?? {}
@@ -61,12 +66,6 @@ export const highlightPlugin: MarkdownIt.PluginWithOptions<Options> = (md, optio
   }
 
   md.options.highlight = (code, lang, attrs) => {
-    const themes: IThemeRegistration[] = []
-    for (const key in theme)
-      themes.push(theme[key])
-
-    syncRun('getHighlighter', { themes, langs: [lang] as unknown as ILanguageRegistration[] })
-
     // simple code block
     if (!attrs || !linesRE.test(attrs)) {
       const dark = highlightCode(code, lang, { theme: theme.dark })
