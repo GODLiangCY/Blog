@@ -13,9 +13,9 @@ import MarkDown from 'vite-plugin-vue-markdown'
 import Anchor from 'markdown-it-anchor'
 import LinkAttributes from 'markdown-it-link-attributes'
 import TOC from 'markdown-it-table-of-contents'
+import Shiki from 'markdown-it-shiki-extra'
 import { slugify } from './scripts/slugify'
 import { getLastUpdateTime } from './scripts/utils'
-import { highlightPlugin } from './plugins/highlight'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -93,18 +93,11 @@ export default defineConfig({
           slugify,
         })
 
-        // inspired by markdown-it-shiki
-        md.use(highlightPlugin, {
+        md.use(Shiki, {
           theme: {
             dark: 'github-dark',
             light: 'github-light',
           },
-          langs: [
-            'javascript',
-            'typescript',
-            'yaml',
-            'json',
-          ],
         })
       },
     }),
