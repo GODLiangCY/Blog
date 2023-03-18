@@ -1,9 +1,8 @@
 // this is a fork from the impletions of element-plus
 import type { ComponentPublicInstance, ObjectDirective } from 'vue'
 import { nextTick } from 'vue'
-import lodash from 'lodash'
+import { throttle } from 'lodash-es'
 import { getOffsetTopDistance, getScrollContainer } from '~/utils'
-const { throttle } = lodash
 
 const SCOPE = 'InfiniteScroll'
 const CHECK_INTERVAL = 50

@@ -49,7 +49,7 @@ const posts = computed(() => {
       </span>
     </div>
     <main v-infinite-scroll="load" overflow-auto>
-      <post-item v-for="post in posts" :key="post.path" v-bind="post" @tagClick="choseTag" />
+      <post-item v-for="post in posts" :key="post.path" v-bind="post" @tag-click="choseTag" />
     </main>
   </div>
 </template>
