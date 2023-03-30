@@ -5,13 +5,21 @@ import { vInfiniteScroll } from '~/directives'
 
 const router = useRouter()
 
-const tag = ref('')
+const tags = ref<string[]>([])
 const initialNum = ref(4)
 
-function choseTag(name: string) {
-  if (!tag.value)
-    tag.value = name
-  else tag.value = ''
+function selectTag(name: string) {
+  const _tags = unref(tags)
+  const idx = _tags.indexOf(name)
+  if (idx === -1)
+    tags.value.push(name)
+
+  else
+    tags.value.splice(idx, 1)
+}
+
+function deselectTag(idx: number) {
+  tags.value.splice(idx, 1)
 }
 
 const allPostsRoutes: Post[] = router.getRoutes()
@@ -33,23 +41,25 @@ function load() {
 }
 
 const posts = computed(() => {
-  return tag.value ? allPostsRoutes.filter(i => i.tags.includes(tag.value)).slice(0, initialNum.value) : allPostsRoutes.slice(0, initialNum.value)
+  return allPostsRoutes
+    .filter(i => tags.value.every(tag => i.tags.includes(tag)))
+    .slice(0, initialNum.value)
 })
 </script>
 
 <template>
   <div>
-    <div v-if="tag" flex>
+    <div v-if="tags.length" flex>
       <span>Tag: &nbsp;&nbsp;</span>
-      <span inline-flex items-center>
-        <i-carbon:tag-group hover:cursor-pointer @click="choseTag(tag)" />
-        <span hover:cursor-pointer hover:underline @click="choseTag(tag)">
+      <span v-for="(tag, idx) of tags" :key="idx" inline-flex items-center mr-2>
+        <i-carbon:tag-group hover:cursor-pointer @click="deselectTag(idx)" />
+        <span hover:cursor-pointer hover:underline @click="deselectTag(idx)">
           {{ tag }}
         </span>
       </span>
     </div>
     <main v-infinite-scroll="load" overflow-auto>
-      <post-item v-for="post in posts" :key="post.path" v-bind="post" @tag-click="choseTag" />
+      <post-item v-for="post in posts" :key="post.path" v-bind="post" @tag-click="selectTag" />
     </main>
   </div>
 </template>
