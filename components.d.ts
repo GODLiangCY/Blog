@@ -19,6 +19,7 @@ declare module '@vue/runtime-core' {
     NavBar: typeof import('./src/components/NavBar.vue')['default']
     PostItem: typeof import('./src/components/PostItem.vue')['default']
     PostWrapper: typeof import('./src/components/PostWrapper.vue')['default']
+    ProgressBar: typeof import('./src/components/ProgressBar.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     ToggleTheme: typeof import('./src/components/ToggleTheme.vue')['default']

@@ -24,6 +24,7 @@ declare module 'vue-router' {
     words: number
     duration: string
     lastUpdateTime: string
+    withProgress?: boolean
   }
   interface RouteMeta {
     frontmatter: FrontMatter

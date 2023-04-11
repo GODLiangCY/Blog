@@ -14,6 +14,10 @@ const route = useRoute()
 // native frontmatter of the markdown file
 // so I put time on here
 const lastUpdateTime = route.meta.frontmatter.lastUpdateTime
+
+const showProgress = route.path.match(/^\/posts\/.+/) && frontmatter.withProgress !== false
+
+const articleEl = ref<null | HTMLElement>(null)
 </script>
 
 <template>
@@ -26,7 +30,7 @@ const lastUpdateTime = route.meta.frontmatter.lastUpdateTime
         {{ frontmatter.date }} <span v-if="frontmatter.duration">· {{ frontmatter.duration }}</span>
       </p>
     </div>
-    <article>
+    <article ref="articleEl">
       <slot />
     </article>
     <div v-if="lastUpdateTime" class="prose m-auto mt-12 opacity-50">
@@ -42,6 +46,7 @@ const lastUpdateTime = route.meta.frontmatter.lastUpdateTime
     </div>
     <ClientOnly>
       <BackToTop />
+      <ProgressBar v-if="showProgress" :el="articleEl" />
     </ClientOnly>
     <FooterBar />
   </div>
