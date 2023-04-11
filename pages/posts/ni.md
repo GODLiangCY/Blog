@@ -171,7 +171,7 @@ if (args[0] === '-C') {
   // 在这里，cwd更新为新的目录,并把-C [name]从args中删除
   cwd = resolve(cwd, args[1])
   args.splice(0, 2)
- }
+}
 ```
 
 同样的，举个例子

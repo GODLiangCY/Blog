@@ -1,10 +1,10 @@
 ---
-title: '从零开始，写一个mini-vue3——第零章：准备工作'
+title: '从零开始，写一个 mini-Vue3 —— 第零章：准备工作'
 date: '2022-08-19'
 tags:
  - Vue
-words: 900
-duration: 2min
+words: 1000
+duration: 3min
 description: "*'What I cannot create, I do not understand' - Richard Feynman*。写一个 mini Vue3，是为了更好地理解 Vue3！Let's go!"
 ---
 
@@ -12,13 +12,13 @@ description: "*'What I cannot create, I do not understand' - Richard Feynman*。
 
 # 前言
 
-阅读了[霍春阳](https://github.com/HcySunYang)大佬所著的《Vue.js 设计与实现》一书后，学到了 Vue3 中很多的技术细节。因此，笔者尝试基于该书与 Vue 源码，写一个 mini-vue3
+阅读了[霍春阳](https://github.com/HcySunYang)大佬所著的《Vue.js 设计与实现》一书后，学到了 Vue3 中很多的技术细节。因此，笔者尝试基于该书与 Vue 源码，写一个 mini-vue3。笔者会尽量尝试兼顾对 Vue 源码的讲解与对 mini-vue3 的编写，并把思路尽可能直白地摆出来，毕竟从零到一的过程才是最难能可贵的
 
 > 真的是写得非常棒的一本书，很建议想学习研究 Vue 源码的朋友们购买
 
 # workspace
 
-[Vue3](https://github.com/vuejs/core) 整体是采用了 [`pnpm workspace`](https://pnpm.io/zh/workspaces) 这样一种结构。那我们也来照葫芦画瓢一下。新建一个名为 mini-vue3 的文件夹，然后执行`pnpm init`，这时候项目根目录下就有了一个 package.json 文件。读者可以根据自己的需求改一下默认的 package.json，并在 `packageManager` 字段下指定 pnpm 以及其版本。随后根目录下新建 pnpm-workspace.yaml，写入
+[Vue3](https://github.com/vuejs/core) 整体是采用了 [`pnpm workspace`](https://pnpm.io/zh/workspaces) 这样一种结构。那我们也来照葫芦画瓢一下。新建一个名为 mini-vue3 的文件夹，然后执行`pnpm init`，这时候项目根目录下就有了一个 package.json 文件。读者可以根据自己的需求改一下默认的 package.json。随后根目录下新建 pnpm-workspace.yaml，写入
 
 ```yaml
 packages:
@@ -29,41 +29,30 @@ packages:
 
 # ESLint
 
-[ESLint](https://eslint.org/) 当然也是不可或缺的开发利器，我们用它来纠错和统一代码风格，这样就不需要 prettier 了。关于用 ESLint 来统一代码风格，还需要手动设置一下。若读者使用的是 VS Code，建议在用户的 settings.json 下写入
+[ESLint](https://eslint.org/) 当然也是不可或缺的开发利器，我们用它来纠正简单的语法错误和统一代码风格。不过嘛，反正我们是自己写着玩的，可以不和 [Vue3 的 ESLint](https://github.com/vuejs/core/blob/main/.eslintrc.js) 一致，而且可以看到 Vue3 是以 [ES2015](https://github.com/vuejs/core/blob/main/.eslintrc.js#L20) 作为一个基准的支持的，相对来说还是蛮老的。笔者这里就直接执行  `pnpm create @eslint/config`，按自己喜欢的来配置了。 
 
-```json
-"editor.codeActionsOnSave": {
-  "source.fixAll": false,
-  "source.fixAll.eslint": true,   // this allows ESLint to auto fix on save
-  "source.organizeImports": false  // if set to true, this will add a semi to the end of the line
-},
-"eslint.validate": [
-  "javascript",
-  "typescript",
-  "javascriptreact",
-  "typescriptreact",
-  "vue",
-  "html",
-  "yaml"
-],
-"eslint.probe": [
-  "javascript",
-  "typescript",
-  "javascriptreact",
-  "typescriptreact",
-  "vue",
-  "html",
-  "yaml"
-],
+# Prettier
+
+[Prettier](https://prettier.io/) 也被用来统一代码风格使用。笔者直接挪用了 Vue 的 Prettier 配置
+
+根目录新建 `.prettierrc.yaml` 如下
+
+```yaml
+semi: false
+singleQuote: true
+printWidth: 80
+trailingComma: 'none'
+arrowParens: 'avoid'
+
 ```
 
-以确保 ESLint 能正确工作。
-
-不过嘛，反正我们是自己写着玩的，可以不和 [Vue3 的 ESLint](https://github.com/vuejs/core/blob/main/.eslintrc.js) 一致，而且可以看到 Vue3 是以 [ES2015](https://github.com/vuejs/core/blob/main/.eslintrc.js#L20) 作为一个基准的支持的。笔者认为直接按自己喜欢的来就好。执行 `pnpm create @eslint/config` ，配置自己想要的即可。
+> 关于 ESLint 与 Prettier 在实际使用的抉择，其实是个见仁见智的问题。但是有一点要求是不变的：遵循其配置
 
 # Vitest
 
-测试框架当然也是必不可少的。Vue3 是应用了 Jest 作为测试框架的，笔者是想用 [Vitest](https://cn.vitest.dev/) 来替代，应该问题不大。Vue3 的 Jest 配置了全局变量，setup file，coverage 规则等等，笔者先将 Jest 的 moduleNameMapper 迁移过来，其他的配置，等需要了再添加上。
+测试框架当然也是必不可少的。Vue3 是应用了 Jest 作为测试框架的，笔者是想用 [Vitest](https://cn.vitest.dev/) 来替代，应该问题不大。Vue3 的 Jest 配置了全局变量，setup file，coverage 规则等等，笔者先将 Jest 的 moduleNameMapper 迁移过来，其他的配置，等需要了再添加上
+
+> 现在 Vue 也迁移到 Vitest 了！
 
 vitest.config.ts 如下
 
@@ -174,7 +163,7 @@ export default defineConfig({
 
 # CI
 
-使用 Github Actions 帮助我们完成 CI 流程。先写一个单测的 CI，对 push 与 PR都检查其是否能覆盖每个单测
+使用 Github Actions 帮助我们完成 CI 流程。先写一个单测的 CI，对 push 与 PR 都检查其是否能覆盖每个单测
 
 项目根目录下新建 .github/workflows/ci.yml，写入
 
@@ -217,7 +206,7 @@ jobs:
 
 #  小结
 
-Done！现在项目[长这样](https://github.com/GODLiangCY/mini-vue3/tree/c1abfc95c8b1eeff622dbf8b0a4595b79a5182cf)( CI 是后来加上的)，后续的更新也会同步到仓库，欢迎点个 star 支持笔者！
+Done！仓库在[这里](https://github.com/GODLiangCY/mini-vue3)，后续的更新也会同步到仓库，欢迎点个 star 支持笔者！
 
 # 系列指路
 

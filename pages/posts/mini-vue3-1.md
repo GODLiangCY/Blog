@@ -1,5 +1,5 @@
 ---
-title: '从零开始，写一个mini-vue3——第一章：响应性系统Ⅰ'
+title: '从零开始，写一个 mini-Vue3 —— 第一章：响应性系统'
 date: '2022-08-26'
 tags:
   - Vue
@@ -12,7 +12,7 @@ duration: 17min
 
 # 前言
 
-写一个 mini vue3 的第一步：从响应性系统开始写起！关于 Vue 的响应性系统，相关的 packages 有 `@vue/reactivity` 与 `@vue/reactivity-transform`，本文讲述如何实现前者。后者是目前 Vue 仍在实验性的[功能](https://cn.vuejs.org/guide/extras/reactivity-transform.html)，是在编译时的转换步骤，在阅读完编译相关源码之后，再去研究其实现。
+写一个 mini vue3 的第一步：从响应性系统开始写起！关于 Vue 的响应性系统，相关的 packages 有 `@vue/reactivity` 与 `@vue/reactivity-transform`，本文讲述如何实现前者。后者是~~目前 Vue 仍在实验性~~已经被 Vue 废弃的实验性[功能](https://cn.vuejs.org/guide/extras/reactivity-transform.html)，是在编译时的转换步骤，~~在阅读完编译相关源码之后，再去研究其实现~~暂时先不研究了，有兴趣的读者可以移步 [Vue-Macros](https://github.com/sxzz/unplugin-vue-macros#readme)。
 
 首先，关于什么是响应性系统，响应性系统是如何工作、实现的，[官方文档](https://cn.vuejs.org/guide/extras/reactivity-in-depth.html)都给出了十分优秀的回答。通过阅读，我们得知了其大致的逻辑就是：
 
@@ -890,7 +890,7 @@ export class ComputedRefImpl<T> {
 
 实现了简单的响应性系统！但是比起 Vue 的响应性系统来，还有很多不足与可优化之处。下面笔者简单讲讲
 
-+ 事实上，整个 `effect` 的实现借鉴了早期的实现。并且我们也没有提供 `stop` 去手动中止一个 `effect`。目前 Vue 也 class 语法糖优化了 `effect` 的代码，并且优化了追踪过程 —— 取代了用  `effectStack` 来解决嵌套 `effect` 的方案，转而使用了 `parent` 这一类成员来表示其父级 `effect`
++ 事实上，整个 `effect` 的实现借鉴了早期的实现。并且我们也没有提供 `stop` 去手动中止一个 `effect`。目前 Vue 用 class 语法糖优化了 `effect` 的代码，并且优化了追踪过程 —— 取代了用  `effectStack` 来解决嵌套 `effect` 的方案，转而使用了 `parent` 这一类成员来表示其父级 `effect`
 
   ```typescript
   export class ReactiveEffect<T = any> {
