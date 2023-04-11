@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { useWindowScroll, watchThrottled } from '@vueuse/core'
 import { useHead } from '@vueuse/head'
 import type { FrontMatter } from '~/types'
+import { getOffsetTop } from '~/utils'
 
 const { frontmatter } = defineProps<{
   frontmatter: FrontMatter
@@ -15,9 +17,52 @@ const route = useRoute()
 // so I put time on here
 const lastUpdateTime = route.meta.frontmatter.lastUpdateTime
 
-const showProgress = route.path.match(/^\/posts\/.+/) && frontmatter.withProgress !== false
+const isPostsRoute = route.path.match(/^\/posts\/.+/)
+
+const showProgress = isPostsRoute && frontmatter.withProgress !== false
 
 const articleEl = ref<null | HTMLElement>(null)
+
+onMounted(() => {
+  if (isPostsRoute) {
+    const toc = document.querySelector('article .table-of-contents')
+    // highlight current title
+    if (toc) {
+      const lists = toc.querySelectorAll<HTMLAnchorElement>('li > a')
+      const names = Array.from(lists).map(i => decodeURIComponent(i.hash).slice(1))
+      const tops = names.map((name) => {
+        const el = document.querySelector<HTMLElement>(`#${name}`)!
+        return getOffsetTop(el)
+      })
+
+      const { y } = useWindowScroll()
+      const windowHeight = window.innerHeight
+      const scrollDistance = computed(() => y.value + windowHeight)
+      let lastIdx: null | number = null
+      let idx = 0
+
+      watchThrottled(
+        scrollDistance,
+        (scroll) => {
+          for (let i = 0; i < tops.length; i++) {
+            if (tops[i] + windowHeight * 0.7 < scroll)
+              idx = i
+          }
+          if (idx === lastIdx)
+            return
+          if (lastIdx !== null)
+            lists[lastIdx].classList.toggle('highlight-title')
+          lists[idx!].classList.toggle('highlight-title')
+          lastIdx = idx
+        },
+        {
+          throttle: 300,
+          immediate: true,
+        },
+      )
+    }
+  }
+})
 </script>
 
 <template>
@@ -52,6 +97,8 @@ const articleEl = ref<null | HTMLElement>(null)
   </div>
 </template>
 
-<style scoped>
-
+<style>
+.highlight-title {
+  color: darkgreen !important;
+}
 </style>
