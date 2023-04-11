@@ -1,16 +1,20 @@
 <script setup lang='ts'>
-import { useScroll, watchThrottled } from '@vueuse/core'
+import { useWindowScroll, watchThrottled } from '@vueuse/core'
 
 const toTop = ref(false)
 
-const { y } = useScroll(window)
+const { y } = useWindowScroll()
 
-watchThrottled(y, () => {
-  if (y.value > 700)
-    toTop.value = true
-  else
-    toTop.value = false
-}, { throttle: 500 })
+watchThrottled(
+  y,
+  (val) => {
+    if (val > 0)
+      toTop.value = true
+    else
+      toTop.value = false
+  },
+  { throttle: 500 },
+)
 
 function backToTop() {
   window.scrollTo({
