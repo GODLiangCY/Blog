@@ -1,5 +1,5 @@
 ---
-title: 阅读Koa源码小记
+title: 阅读 Koa 源码小记
 date: '2022-05-20'
 tags: 
  - Node
@@ -8,23 +8,23 @@ tags:
 categories:
  - BackEnd
 words: 1600
-duration: '4min'
-description: 'Koa向来以小而美著称，简洁且易于上手，是小项目开发的不二选择。
+duration: '4 min'
+description: 'Koa 向来以小而美著称，简洁且易于上手，是小项目开发的不二选择。
 
-笔者旨在学习Koa2.13.1源码的设计与实现'
+笔者旨在学习 Koa2.13.1 源码的设计与实现'
 ---
 
 [[toc]]
 
 ## 前置工作
 
-上Github找到相应的[Koa版本](https://github.com/koajs/koa/releases/tag/2.13.1)，下载过来并解压
+上 Github 找到相应的 [Koa 版本](https://github.com/koajs/koa/releases/tag/2.13.1)，下载过来并解压
 
 
 
 ## 初窥全貌
 
-浏览Koa的 `package.json` 文件，发现
+浏览 Koa 的 `package.json` 文件，发现
 
 ```json
 {
@@ -90,7 +90,7 @@ module.exports = class Application extends Emitter {
 > myEmitter.emit('event')
 > ```
 
-这种经典的 `.on` 式的回调写法，在 Node 中无处不在，如 http.Server 等。可以说 `EventEmitter` 是 Node 异步 IO 机制的基石。
+这种经典的 `.on` 式的回调写法，在 Node 中无处不在，如 http.Server 等。可以说 `EventEmitter` 是 Node 异步 IO 机制的基石
 
 
 
@@ -237,11 +237,11 @@ function compose(middleware) {
 }
 ```
 
-其核心就在于 `dispatch` 函数。该函数依次取出 `middleware` 中的函数，并将其通过 `Promise.resolve()` 串联在一起。只要 `middleware` 中的函数执行了 `next()`，下一个函数也将紧跟着执行，直到遍历完整个 `middleware` 数组。得益于 **Event Loop**，`Promise.resolve()` 使所有异步函数依次在微任务队列里执行完。这里还用 `index` 指向上一个被调用的 `middleware function`，所以出现了闭包结构。
+其核心就在于 `dispatch` 函数。该函数依次取出 `middleware` 中的函数，并将其通过 `Promise.resolve()` 串联在一起。只要 `middleware` 中的函数执行了 `next()`，下一个函数也将紧跟着执行，直到遍历完整个 `middleware` 数组。得益于 **Event Loop**，`Promise.resolve()` 使所有异步函数依次在微任务队列里执行完。这里还用 `index` 指向上一个被调用的 `middleware function`，所以出现了闭包结构
 
 ## Settings
 
-Koa 还支持[设置实例的一些属性](https://koajs.com/#application)，如 `app.env`, `app.keys` 等。 
+Koa 还支持[设置实例的一些属性](https://koajs.com/#application)，如 `app.env`, `app.keys` 等
 
 这个就比较简单了,其相关实现如下
 
@@ -272,13 +272,13 @@ Koa 还支持[设置实例的一些属性](https://koajs.com/#application)，如
 
 ## request，response，context
 
-在 Node 的原生 http 模块中，[`http.createServer`](http://nodejs.cn/api/http.html#httpcreateserveroptions-requestlistener) 接受 `requestListener` 回调函数作为其参数。该函数的两个参数 `request` 和 `response`，是分别基于 `http.IncomingMessage` 类和 `http.ServerResponse` 类的。在 Koa 中，为了简化、方便开发者对其的处理，Koa 自己封装了 `request` 和 `response`，可以理解为对原生 `IncomingMessage` 和 `ServerResponse` 的一层抽象。
+在 Node 的原生 http 模块中，[`http.createServer`](http://nodejs.cn/api/http.html#httpcreateserveroptions-requestlistener) 接受 `requestListener` 回调函数作为其参数。该函数的两个参数 `request` 和 `response`，是分别基于 `http.IncomingMessage` 类和 `http.ServerResponse` 类的。在 Koa 中，为了简化、方便开发者对其的处理，Koa 自己封装了 `request` 和 `response`，可以理解为对原生 `IncomingMessage` 和 `ServerResponse` 的一层抽象
 
 `context` 则是将 `request` 和 `response` 对象封装成一个对象，为开发提供了很多有用的属性与 API
 
-lib 文件夹的三个相应的文件，正是书写了这三者的 `Prototype`，在 Koa 主体中以 `Object.create(proto)` 的方式使用。
+lib 文件夹的三个相应的文件，正是书写了这三者的 `Prototype`，在 Koa 主体中以 `Object.create(proto)` 的方式使用
 
-`context.js` 中还利用了 `delegates` 这个年久失修的包，凭借委托的设计模式来控制 `context` 上的 `request` 和 `response` 的行为。
+`context.js` 中还利用了 `delegates` 这个年久失修的包，凭借委托的设计模式来控制 `context` 上的 `request` 和 `response` 的行为
 
 例如
 
@@ -296,7 +296,7 @@ delegate(proto, 'response')
 
 其[源代码](https://github.com/tj/node-delegates/blob/master/index.js#L107)里居然还出现了用 `proto.__defineGetter__` 来改写[[ Get ]]行为的写法。17年有位老哥提了个用 `Object.defineProperty` 代替的 [PR](https://github.com/tj/node-delegates/pull/20)，也没人管...    
 
-详细内容，读者若有兴趣可自行查阅，文档与源码照着一起看。
+详细内容，读者若有兴趣可自行查阅，文档与源码照着一起看
 
 ## 小结
 
