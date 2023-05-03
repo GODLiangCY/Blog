@@ -29,6 +29,9 @@ import zhihuSVG from '~/assets/zhihu.svg?url'
         <a href="https://www.zhihu.com/people/youngggglcy" target="_blank" title="知乎">
           <img class="w-[1.2rem] h-[1.2rem] block dark:bg-gray-300" alt="Zhihu logo" :src="zhihuSVG">
         </a>
+        <router-link to="/friends" title="友链" class="lt-md:hidden">
+          <div i-fa-solid:user-friends />
+        </router-link>
         <a href="/feed.xml" target="_blank" title="RSS" class="lt-md:hidden">
           <div i-la-rss-square style="font-size:1.25rem; margin: 0 -0.125rem;" />
         </a>
