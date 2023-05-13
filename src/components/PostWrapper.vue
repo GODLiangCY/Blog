@@ -25,6 +25,12 @@ const showProgress = isPostsRoute && frontmatter.withProgress !== false
 const articleEl = ref<null | HTMLElement>(null)
 
 onMounted(() => {
+  if (route.hash) {
+    const el = document.querySelector<HTMLAnchorElement>(`${decodeURIComponent(route.hash)}`)
+    el?.scrollIntoView({
+      behavior: 'smooth',
+    })
+  }
   const toc = document.querySelector('article .table-of-contents')
   if (isPostsRoute && toc) {
     const lists = Array.from(toc.querySelectorAll<HTMLAnchorElement>('li > a'))
