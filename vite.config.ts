@@ -14,12 +14,15 @@ import Anchor from 'markdown-it-anchor'
 import LinkAttributes from 'markdown-it-link-attributes'
 import TOC from 'markdown-it-table-of-contents'
 import Shiki from 'markdown-it-shiki-extra'
+import Inspect from 'vite-plugin-inspect'
 import { slugify } from './scripts/slugify'
 import { getLastUpdateTime } from './scripts/utils'
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
+    Inspect(),
+
     Vue({
       include: [/\.vue$/, /\.md$/],
     }),
