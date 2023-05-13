@@ -25,42 +25,63 @@ const articleEl = ref<null | HTMLElement>(null)
 
 onMounted(() => {
   if (isPostsRoute) {
-    const toc = document.querySelector('article .table-of-contents')
+    const toc = document.querySelector('article .table-of-contents')!
+    const lists = Array.from(toc.querySelectorAll<HTMLAnchorElement>('li > a'))
+
+    for (const item of lists)
+      item.addEventListener('click', handleClick)
+
     // highlight current title
-    if (toc) {
-      const lists = toc.querySelectorAll<HTMLAnchorElement>('li > a')
-      const names = Array.from(lists).map(i => decodeURIComponent(i.hash).slice(1))
-      const tops = names.map((name) => {
-        const el = document.querySelector<HTMLElement>(`#${name}`)!
-        return getOffsetTop(el)
-      })
+    const names = lists.map(i => decodeURIComponent(i.hash).slice(1))
+    const tops = names.map((name) => {
+      const el = document.querySelector<HTMLElement>(`#${name}`)!
+      return getOffsetTop(el)
+    })
 
-      const { y } = useWindowScroll()
-      const windowHeight = window.innerHeight
-      const scrollDistance = computed(() => y.value + windowHeight)
-      let lastIdx: null | number = null
-      let idx = 0
+    const { y } = useWindowScroll()
+    const windowHeight = window.innerHeight
+    const scrollDistance = computed(() => y.value + windowHeight)
+    let lastIdx: null | number = null
+    let idx = 0
 
-      watchThrottled(
-        scrollDistance,
-        (scroll) => {
-          for (let i = 0; i < tops.length; i++) {
-            if (tops[i] + windowHeight * 0.7 < scroll)
-              idx = i
-          }
-          if (idx === lastIdx)
-            return
-          if (lastIdx !== null)
-            lists[lastIdx].classList.toggle('highlight-title')
-          lists[idx!].classList.toggle('highlight-title')
-          lastIdx = idx
-        },
-        {
-          throttle: 300,
-          immediate: true,
-        },
-      )
-    }
+    watchThrottled(
+      scrollDistance,
+      (scroll) => {
+        for (let i = 0; i < tops.length; i++) {
+          if (tops[i] + windowHeight * 0.7 < scroll)
+            idx = i
+        }
+        if (idx === lastIdx)
+          return
+        if (lastIdx !== null)
+          lists[lastIdx].classList.toggle('highlight-title')
+        lists[idx!].classList.toggle('highlight-title')
+        lastIdx = idx
+      },
+      {
+        throttle: 300,
+        immediate: true,
+      },
+    )
+  }
+})
+
+function handleClick(this: HTMLAnchorElement, e: MouseEvent) {
+  e.preventDefault()
+
+  const el = document.querySelector<HTMLElement>(`${decodeURIComponent(this.hash)}`)!
+  el.scrollIntoView({
+    behavior: 'smooth',
+  })
+}
+
+onUnmounted(() => {
+  if (isPostsRoute) {
+    const toc = document.querySelector('article .table-of-contents')!
+    const lists = Array.from(toc.querySelectorAll<HTMLAnchorElement>('li > a'))
+
+    for (const item of lists)
+      item.removeEventListener('click', handleClick)
   }
 })
 </script>
