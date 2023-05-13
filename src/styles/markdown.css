@@ -1,9 +1,8 @@
-
-html.dark .shiki-light {
+html.dark .shiki.github-light {
   display: none;
 }
 
-html:not(.dark) .shiki-dark {
+html:not(.dark) .shiki.github-dark {
   display: none;
 }
 
@@ -14,11 +13,11 @@ pre.shiki span[class*="highlighted"] {
   display: inline-block;
 }
 
-.shiki-dark .highlighted-dark {
+.github-dark .highlighted-dark {
   background-color: teal;
 }
 
-.shiki-light .highlighted-light {
+.github-light .highlighted-light {
   background-color: lightsalmon;
 }
 
