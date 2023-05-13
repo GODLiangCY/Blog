@@ -11,6 +11,7 @@ const { frontmatter } = defineProps<{
 useHead({ title: frontmatter.title })
 
 const route = useRoute()
+const router = useRouter()
 
 // the vite-plugin-vue-markdown plugin will only parse
 // native frontmatter of the markdown file
@@ -68,6 +69,10 @@ onMounted(() => {
 
 function handleClick(this: HTMLAnchorElement, e: MouseEvent) {
   e.preventDefault()
+  router.replace({
+    path: route.path,
+    hash: decodeURIComponent(this.hash),
+  })
 
   const el = document.querySelector<HTMLElement>(`${decodeURIComponent(this.hash)}`)!
   el.scrollIntoView({
