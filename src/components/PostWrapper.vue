@@ -24,8 +24,8 @@ const showProgress = isPostsRoute && frontmatter.withProgress !== false
 const articleEl = ref<null | HTMLElement>(null)
 
 onMounted(() => {
-  if (isPostsRoute) {
-    const toc = document.querySelector('article .table-of-contents')!
+  const toc = document.querySelector('article .table-of-contents')
+  if (isPostsRoute && toc) {
     const lists = Array.from(toc.querySelectorAll<HTMLAnchorElement>('li > a'))
 
     for (const item of lists)
@@ -76,8 +76,8 @@ function handleClick(this: HTMLAnchorElement, e: MouseEvent) {
 }
 
 onUnmounted(() => {
-  if (isPostsRoute) {
-    const toc = document.querySelector('article .table-of-contents')!
+  const toc = document.querySelector('article .table-of-contents')
+  if (isPostsRoute && toc) {
     const lists = Array.from(toc.querySelectorAll<HTMLAnchorElement>('li > a'))
 
     for (const item of lists)
