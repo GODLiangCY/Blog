@@ -16,9 +16,13 @@ const scrollTotal = computed(() => y.value + windowHeight)
 // the height of the images should be added to
 // the true height of a component processed by vite-plugin-vue-markdown
 // and you can't do it using onMounted and nextTick
-setTimeout(() => {
-  elHeight.value = props.el.clientHeight
-}, 300)
+const id = setInterval(() => {
+  const val = props.el.clientHeight
+  if (val !== elHeight.value) {
+    elHeight.value = val
+    clearInterval(id)
+  }
+}, 30)
 
 const read = computed(() => {
   const val = scrollTotal.value - top
