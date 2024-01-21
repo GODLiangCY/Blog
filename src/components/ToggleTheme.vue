@@ -10,8 +10,8 @@ function toggleDark() {
 
 <template>
   <a class="select-none" title="Toggle Color Scheme" @click="toggleDark">
-    <i-ri-moon-line v-show="isDark" />
-    <i-ri-sun-line v-show="!isDark" />
+    <div i-ri-moon-line v-show="isDark" />
+    <div i-ri-sun-line v-show="!isDark" />
   </a>
 </template>
 
